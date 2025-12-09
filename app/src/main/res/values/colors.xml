@@ -4,6 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="button_colors_categories">#525DC0</color>
     <color name="button_colors_favorites">#E13E3E</color>
-    <color name="milky_white">#F4FAFF</color>
-    <color name="nav_bar">#F5F5F5</color>
+    <color name="status_bar_color">#F4FAFF</color>
+    <color name="nav_bar_color">#F5F5F5</color>
 </resources>
