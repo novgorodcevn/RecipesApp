@@ -2,4 +2,6 @@
     <string name="app_name">RecipesApp</string>
     <string name="title_categories">Категории</string>
     <string name="title_favourites">Избранное</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">fragment_list_categories</string>
 </resources>
