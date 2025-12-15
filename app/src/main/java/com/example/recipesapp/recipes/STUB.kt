@@ -1,7 +1,6 @@
 package com.example.recipesapp.recipes
 
 import com.example.recipesapp.Category
-import java.util.Locale
 
 object STUB {
     private val categories = listOf<Category>(
