@@ -6,14 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.recipesapp.databinding.FragmentFavoritesBinding
-import com.example.recipesapp.databinding.FragmentListCategoriesBinding
 
 class FavoritesFragment : Fragment() {
     private var _binding: FragmentFavoritesBinding? = null
     private val binding
         get() = _binding
-            ?: throw IllegalStateException("Binding for F FragmentFavoritesBinding must not be null")
-
+            ?: throw IllegalStateException("Binding for FragmentFavoritesBinding must not be null")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
