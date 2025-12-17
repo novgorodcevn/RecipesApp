@@ -1,6 +1,7 @@
 package com.example.recipesapp
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,11 +26,17 @@ class CategoriesListAdapter(private val dataSet: List<Category>) :
         val category: Category = dataSet[position]
         viewHolder.binding.titleItemCategory.text = category.title
         viewHolder.binding.descriptionItemCategory.text = category.description
-        val inputStrim = viewHolder.itemView.context.assets.open(category.imageUrl)
-        val image = Drawable.createFromStream(inputStrim, null)
+
+        val image = try {
+            Drawable.createFromStream(
+                viewHolder.itemView.context.assets.open(category.imageUrl),
+                null
+            )
+        } catch (e: Error) {
+            Log.e("error", "Stack Trace${category.imageUrl}")
+            null
+        }
         viewHolder.binding.imageItemCategory.setImageDrawable(image)
-     //  val inputStream = context.getAssets().open(url)
-       // val d = Drawable.createFromStream(context?.assets?.open("imageData/${imageName}.png"), null)
     }
 
     override fun getItemCount() = dataSet.size
