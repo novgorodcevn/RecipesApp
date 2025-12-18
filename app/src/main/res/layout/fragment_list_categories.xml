@@ -27,7 +27,6 @@
             style="@style/StyleHeading14"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/margin_normal"
             android:layout_marginStart="@dimen/size_normal"
             android:layout_marginBottom="@dimen/size_normal"
             android:background="@drawable/shape_rounded_variants"
@@ -48,7 +47,6 @@
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
         tools:itemCount="6"
-        tools:listitem="@layout/item_category">
+        tools:listitem="@layout/item_category" />
 
-    </androidx.recyclerview.widget.RecyclerView>
 </LinearLayout>
