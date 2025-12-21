@@ -24,8 +24,8 @@ class CategoriesListAdapter(private val dataSet: List<Category>) :
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val category: Category = dataSet[position]
-        viewHolder.binding.titleItemCategory.text = category.title
-        viewHolder.binding.descriptionItemCategory.text = category.description
+        viewHolder.binding.tvTitleItemCategory.text = category.title
+        viewHolder.binding.tvDescriptionItemCategory.text = category.description
 
         val image = try {
             Drawable.createFromStream(
@@ -36,7 +36,7 @@ class CategoriesListAdapter(private val dataSet: List<Category>) :
             Log.e("error", "Stack Trace${category.imageUrl}")
             null
         }
-        viewHolder.binding.imageItemCategory.setImageDrawable(image)
+        viewHolder.binding.ivItemCategory.setImageDrawable(image)
     }
 
     override fun getItemCount() = dataSet.size
