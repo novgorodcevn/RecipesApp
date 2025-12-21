@@ -28,11 +28,10 @@ class CategoriesListAdapter(private val dataSet: List<Category>) :
         viewHolder.binding.tvDescriptionItemCategory.text = category.description
 
         val image = try {
-            Drawable.createFromStream(
-                viewHolder.itemView.context.assets.open(category.imageUrl),
-                null
-            )
-        } catch (e: Error) {
+            viewHolder.itemView.context.assets.open(category.imageUrl).use { inputStream ->
+                Drawable.createFromStream(inputStream, null)
+            }
+        } catch (e: Exception) {
             Log.e("error", "Stack Trace${category.imageUrl}")
             null
         }

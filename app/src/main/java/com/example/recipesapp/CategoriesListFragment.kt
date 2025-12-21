@@ -24,17 +24,19 @@ class CategoriesListFragment : Fragment() {
     ): View {
         _binding = FragmentListCategoriesBinding.inflate(inflater, container, false)
         return binding.root
-
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val customAdapter = CategoriesListAdapter(STUB.getCategories())
-        binding.rvCategories.adapter = customAdapter
-
+         initRecycler()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+    private fun initRecycler() {
+        val customAdapter = CategoriesListAdapter(STUB.getCategories())
+        binding.rvCategories.adapter = customAdapter
     }
 }
