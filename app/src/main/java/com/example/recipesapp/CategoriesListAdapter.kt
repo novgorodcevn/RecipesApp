@@ -39,5 +39,4 @@ class CategoriesListAdapter(private val dataSet: List<Category>) :
     }
 
     override fun getItemCount() = dataSet.size
-
 }
