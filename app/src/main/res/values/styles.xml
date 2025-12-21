@@ -13,4 +13,24 @@
         <item name="cornerRadius">@dimen/size_small</item>
     </style>
 
+    <style name="StyleHeading14" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/montserrat_alternates_semi_bold</item>
+        <item name="android:textSize">@dimen/text_size_big</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
+    <style name="StyleTitleItem" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/montserrat_alternates_semi_bold</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
+    <style name="StyleDescriptionItem" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/montserrat_medium</item>
+        <item name="android:textSize">@dimen/text_size_description</item>
+        <item name="android:textColor">@color/text_description</item>
+    </style>
+
 </resources>
