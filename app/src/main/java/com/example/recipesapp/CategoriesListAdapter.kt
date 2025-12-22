@@ -32,7 +32,7 @@ class CategoriesListAdapter(private val dataSet: List<Category>) :
                 Drawable.createFromStream(inputStream, null)
             }
         } catch (e: Exception) {
-            Log.e("error", "Stack Trace${category.imageUrl}")
+            Log.e("error", "Error loading image: ${category.imageUrl}", e)
             null
         }
         viewHolder.binding.ivItemCategory.setImageDrawable(image)
