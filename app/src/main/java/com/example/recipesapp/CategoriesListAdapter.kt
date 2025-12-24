@@ -8,8 +8,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipesapp.databinding.ItemCategoryBinding
 
+
+
 class CategoriesListAdapter(private val dataSet: List<Category>) :
     RecyclerView.Adapter<CategoriesListAdapter.ViewHolder>() {
+
+    interface OnItemClickListener {
+        fun onItemClick()
+    }
+    var itemClickListener: OnItemClickListener? = null
+    fun  setOnItemClickListener(listener: OnItemClickListener){
+        itemClickListener = listener
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val binding = ItemCategoryBinding.bind(itemView)
@@ -26,6 +36,9 @@ class CategoriesListAdapter(private val dataSet: List<Category>) :
         val category: Category = dataSet[position]
         viewHolder.binding.tvTitleItemCategory.text = category.title
         viewHolder.binding.tvDescriptionItemCategory.text = category.description
+        viewHolder.binding.cwItemCategory.setOnClickListener {
+            itemClickListener?.onItemClick()
+        }
 
         val image = try {
             viewHolder.itemView.context.assets.open(category.imageUrl).use { inputStream ->

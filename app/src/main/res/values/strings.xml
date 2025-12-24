@@ -5,4 +5,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_favorites">fragment_list_favorites</string>
     <string name="hello_blank_categories">fragment_list_categories</string>
+    <string name="title_recipes">Рецепт</string>
 </resources>
