@@ -10,4 +10,5 @@
     <dimen name="text_size_description">12sp</dimen>
     <dimen name="image_size_small">130dp</dimen>
     <dimen name="image_size_normal">224dp</dimen>
+    <dimen name="image_size_very_small">100dp</dimen>
 </resources>
