@@ -9,6 +9,11 @@ import com.example.recipesapp.databinding.FragmentListRecipesBinding
 
 class RecipesListFragment : Fragment() {
     private var _binding: FragmentListRecipesBinding? = null
+
+    private var argCategoryId: Int? = null
+    private var argCategoryName: String? = null
+    private var argCategoryImageUrl: String? = null
+
     private val binding
         get() = _binding
             ?: throw IllegalStateException("Binding for FragmentListRecipesBinding must not be null")
@@ -19,6 +24,14 @@ class RecipesListFragment : Fragment() {
     ): View {
         _binding = FragmentListRecipesBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        argCategoryId = requireArguments().getInt("ARG_CATEGORY_ID")
+        argCategoryName = requireArguments().getString("ARG_CATEGORY_NAME")
+        argCategoryImageUrl = requireArguments().getString("ARG_CATEGORY_IMAGE_URL")
     }
 
     override fun onDestroyView() {
