@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.example.recipesapp.constants.ARG_CATEGORY_ID
 import com.example.recipesapp.constants.ARG_CATEGORY_IMAGE_URL
 import com.example.recipesapp.constants.ARG_CATEGORY_NAME
+import com.example.recipesapp.constants.ARG_RECIPE
 import com.example.recipesapp.databinding.FragmentListRecipesBinding
 import com.example.recipesapp.recipes.STUB
 
@@ -64,8 +66,12 @@ class RecipesListFragment : Fragment() {
     }
 
     private fun openRecipeByRecipeId(recipeId: Int) {
+        val recipe = STUB.getRecipeById(recipeId)
+        val bundle = bundleOf(
+            ARG_RECIPE to recipe
+        )
         parentFragmentManager.commit {
-            replace<RecipeFragment>(R.id.mainContainer)
+            replace<RecipeFragment>(R.id.mainContainer,args = bundle)
             setReorderingAllowed(true)
             addToBackStack(null)
         }
