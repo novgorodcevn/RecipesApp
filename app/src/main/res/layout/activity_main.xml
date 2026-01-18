@@ -53,7 +53,8 @@
             app:backgroundTint="@color/button_colors_favorites"
             app:icon="@drawable/ic_heart"
             app:iconGravity="textEnd"
-            app:iconSize="@dimen/icon_size" />
+            app:iconSize="@dimen/icon_size"
+            android:paddingHorizontal="@dimen/padding_size_normal"/>
 
     </LinearLayout>
 
