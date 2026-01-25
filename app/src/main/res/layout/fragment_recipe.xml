@@ -1,15 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background_color"
     tools:context=".RecipeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/tvTitleRecipe"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content">
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/ivRecipes"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/image_size_normal"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toTopOf="@id/tvTitleRecipe"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvHeadingCategories"
+            style="@style/StyleHeading14"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/size_normal"
+            android:layout_marginBottom="@dimen/size_normal"
+            android:background="@drawable/shape_rounded_variants"
+            android:gravity="center"
+            android:padding="@dimen/margin_normal"
+            tools:text="@string/title_categories"
+            app:layout_constraintBottom_toBottomOf="@id/ivRecipes"
+            app:layout_constraintStart_toStartOf="@id/ivRecipes" />
+
+        <TextView
+            style="@style/StyleHeading14"
+            android:id="@+id/tvTitleRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/title_recipe"
+            android:layout_margin="@dimen/size_normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivRecipes" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:paddingVertical="@dimen/margin_small_vertical"
+            android:id="@+id/rvIngredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/size_normal"
+            android:background="@drawable/bg_rounded_white"
+            android:nestedScrollingEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitleRecipe"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            tools:itemCount="6"
+            tools:listitem="@layout/item_ingredients"/>
+
+        <TextView
+            android:id="@+id/textMethodHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/size_normal"
+            android:text="@string/text_method_header"
+            style="@style/StyleHeading14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvIngredients" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:paddingVertical="@dimen/margin_small_vertical"
+            android:id="@+id/rvMethod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/size_normal"
+            android:background="@drawable/bg_rounded_white"
+            android:nestedScrollingEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textMethodHeader"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="1"
+            tools:itemCount="6"
+            tools:listitem="@layout/item_method"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
