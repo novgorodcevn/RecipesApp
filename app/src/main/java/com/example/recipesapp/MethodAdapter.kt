@@ -23,7 +23,7 @@ class MethodAdapter(private val dataSet: List<String>) :
 
     override fun onBindViewHolder(viewHolder: MethodAdapter.ViewHolder, position: Int) {
         val method: String = dataSet[position]
-        val indexMethod = "${position + 1}.$method"
+        val indexMethod = "${position + 1}. $method"
         viewHolder.binding.tvMethod.text = indexMethod
     }
 

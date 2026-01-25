@@ -13,7 +13,6 @@ import com.example.recipesapp.constants.ARG_RECIPE
 import com.example.recipesapp.databinding.FragmentRecipeBinding
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
-
 class RecipeFragment : Fragment() {
 
     private var _binding: FragmentRecipeBinding? = null
@@ -56,6 +55,7 @@ class RecipeFragment : Fragment() {
                 dividerInsetStart = resources.getDimensionPixelOffset(R.dimen.margin_big)
                 dividerInsetEnd = resources.getDimensionPixelOffset(R.dimen.margin_big)
                 isLastItemDecorated = false
+                dividerColor = ContextCompat.getColor(requireContext(), R.color.nav_bar_color)
             }
 
         val customAdapterIngredients = IngredientsAdapter(recipe?.ingredients ?: emptyList())

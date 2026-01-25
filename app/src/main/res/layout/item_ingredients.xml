@@ -5,34 +5,21 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/margin_big"
     android:layout_marginVertical="@dimen/size_small"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/tvDescriptionRecipe"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            style="@style/StyleIngredientsItem"
-            tools:text="Булочка для гамбургера" />
+        style="@style/StyleIngredientsItem"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="Булочка для гамбургера" />
 
-        <TextView
-            android:id="@+id/tvQuantityRecipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/StyleIngredientsItem"
-            tools:text="1" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" " />
-
-        <TextView
-            android:id="@+id/twUnitOfMeasureRecipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/StyleIngredientsItem"
-            tools:text="шт" />
-
+    <TextView
+        android:id="@+id/tvQuantityRecipe"
+        style="@style/StyleIngredientsItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1" />
 
 </LinearLayout>

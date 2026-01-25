@@ -23,9 +23,9 @@ class IngredientsAdapter(private val dataSet: List<Ingredient>) :
 
     override fun onBindViewHolder(viewHolder: IngredientsAdapter.ViewHolder, position: Int) {
         val ingredient: Ingredient = dataSet[position]
+        val quantityRecipe= "${ingredient.quantity} ${ingredient.unitOfMeasure}"
         viewHolder.binding.tvDescriptionRecipe.text = ingredient.description
-        viewHolder.binding.tvQuantityRecipe.text = ingredient.quantity
-        viewHolder.binding.twUnitOfMeasureRecipe.text = ingredient.unitOfMeasure
+        viewHolder.binding.tvQuantityRecipe.text = quantityRecipe
     }
 
     override fun getItemCount() = dataSet.size

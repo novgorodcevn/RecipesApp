@@ -1,5 +1,6 @@
 package com.example.recipesapp
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -31,6 +32,7 @@ class CategoriesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initUI()
         initRecycler()
     }
 
@@ -63,5 +65,12 @@ class CategoriesListFragment : Fragment() {
             setReorderingAllowed(true)
             addToBackStack(null)
         }
+    }
+
+    private fun initUI() {
+        val image = "bcg_categories.png".let { context?.assets?.open(it) }.use { inputStream ->
+            Drawable.createFromStream(inputStream, null)
+        }
+        binding.ivCategories.setImageDrawable(image)
     }
 }
