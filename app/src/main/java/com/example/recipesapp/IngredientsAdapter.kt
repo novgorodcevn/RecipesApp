@@ -8,6 +8,14 @@ import com.example.recipesapp.databinding.ItemIngredientsBinding
 
 class IngredientsAdapter(private val dataSet: List<Ingredient>) :
     RecyclerView.Adapter<IngredientsAdapter.ViewHolder>() {
+
+    var quantity: Int = 1
+
+    fun updateIngredients(progress: Int) {
+        quantity = progress
+        notifyDataSetChanged()
+    }
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val binding = ItemIngredientsBinding.bind(itemView)
     }
@@ -23,7 +31,17 @@ class IngredientsAdapter(private val dataSet: List<Ingredient>) :
 
     override fun onBindViewHolder(viewHolder: IngredientsAdapter.ViewHolder, position: Int) {
         val ingredient: Ingredient = dataSet[position]
-        val quantityRecipe= "${ingredient.quantity} ${ingredient.unitOfMeasure}"
+        val quantityText = if (quantity != null) {
+            val updateQuantity = ingredient.quantity.toDouble() * quantity
+            if (updateQuantity % 1.0 == 0.0) {
+                updateQuantity.toInt().toString()
+            } else {
+                "%.1f".format(updateQuantity)
+            }
+        } else {
+            ingredient.quantity
+        }
+        val quantityRecipe = "$quantityText ${ingredient.unitOfMeasure}"
         viewHolder.binding.tvDescriptionRecipe.text = ingredient.description
         viewHolder.binding.tvQuantityRecipe.text = quantityRecipe
     }

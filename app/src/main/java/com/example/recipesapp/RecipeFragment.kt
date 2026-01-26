@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -65,6 +66,19 @@ class RecipeFragment : Fragment() {
         val customAdapterMethod = MethodAdapter(recipe?.method ?: emptyList())
         binding.rvMethod.adapter = customAdapterMethod
         binding.rvMethod.addItemDecoration(divider)
+        binding.sbRecipe.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+
+            override fun onProgressChanged(
+                seekBar: SeekBar?,
+                progress: Int,
+                fromUser: Boolean
+            ) {
+                binding.tvQuantityPortions.text = progress.toString()
+                customAdapterIngredients.updateIngredients(progress)
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
     }
 
     private fun initUI() {
