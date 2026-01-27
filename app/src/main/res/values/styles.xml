@@ -46,11 +46,10 @@
         <item name="android:textColor">@color/text_description</item>
     </style>
 
-    <style name="StyleTvPortions" parent="TextAppearance.AppCompat">
+    <style name="д" parent="TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/montserrat_semi_bold</item>
         <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:textColor">@color/text_description</item>
     </style>
-
 
 </resources>
