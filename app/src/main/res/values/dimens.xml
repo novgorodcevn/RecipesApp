@@ -16,4 +16,6 @@
     <dimen name="image_size_very_small">100dp</dimen>
     <dimen name="margin_small_vertical">4dp</dimen>
     <dimen name="margin_medium_vertical">6dp</dimen>
+    <dimen name="size_medium">30dp</dimen>
+    <dimen name="margin_seek_bar">7dp</dimen>
 </resources>
