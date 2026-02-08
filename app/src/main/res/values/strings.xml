@@ -11,4 +11,5 @@
     <string name="title_recipe">Ингредиенты</string>
     <string name="text_method_header">Способ приготовления</string>
     <string name="portion_recipe">Порции:</string>
+    <string name="favorite">Добавить в избранное</string>
 </resources>
