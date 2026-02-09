@@ -51,7 +51,7 @@
             android:layout_weight="1"
             android:text="@string/title_favourites"
             app:backgroundTint="@color/button_colors_favorites"
-            app:icon="@drawable/ic_heart"
+            app:icon="@drawable/ic_heart_empty"
             app:iconGravity="textEnd"
             app:iconSize="@dimen/icon_size"
             android:paddingHorizontal="@dimen/padding_size_normal"/>

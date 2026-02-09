@@ -76,12 +76,17 @@ class RecipeFragment : Fragment() {
                 binding.tvQuantityPortions.text = progress.toString()
                 customAdapterIngredients.updateIngredients(progress)
             }
+
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
     }
 
     private fun initUI() {
+        binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
+        binding.ibFavorite.setOnClickListener {
+            binding.ibFavorite.setImageResource(R.drawable.ic_heart)
+        }
         binding.tvHeadingCategories.text = recipe?.title
         val image = recipe?.imageUrl?.let { context?.assets?.open(it) }.use { inputStream ->
             Drawable.createFromStream(inputStream, null)

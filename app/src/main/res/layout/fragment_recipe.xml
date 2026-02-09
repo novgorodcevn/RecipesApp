@@ -22,6 +22,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageButton
+            android:id="@+id/ibFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/favorite"
+            app:layout_constraintEnd_toEndOf="@+id/ivRecipes"
+            app:layout_constraintTop_toTopOf="@+id/ivRecipes"
+            tools:src="@drawable/ic_heart_empty"
+            android:layout_margin="@dimen/size_normal"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
         <TextView
             android:id="@+id/tvHeadingCategories"
             style="@style/StyleHeading14"
