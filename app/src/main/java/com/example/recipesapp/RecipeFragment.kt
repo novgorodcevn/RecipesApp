@@ -115,7 +115,6 @@ class RecipeFragment : Fragment() {
         val sharedPref = requireContext().getSharedPreferences(SAVE_FAVORITES_ID, Context.MODE_PRIVATE)
         sharedPref.edit {
             putStringSet(KEY_FAVORITES_ID, favorites)
-            apply()
         }
     }
 
@@ -124,7 +123,9 @@ class RecipeFragment : Fragment() {
         val newSetPref = sharedPref?.getStringSet(KEY_FAVORITES_ID, emptySet()) ?: emptySet()
         return HashSet(newSetPref)
     }
-}
 
-const val KEY_FAVORITES_ID = "favorite_id"
-const val SAVE_FAVORITES_ID = "save_favorites"
+    companion object {
+        const val KEY_FAVORITES_ID = "favorite_id"
+        const val SAVE_FAVORITES_ID = "save_favorites"
+    }
+}
