@@ -1,5 +1,6 @@
 package com.example.recipesapp
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.recipesapp.constants.ARG_RECIPE
 import com.example.recipesapp.databinding.FragmentRecipeBinding
 import com.google.android.material.divider.MaterialDividerItemDecoration
+import androidx.core.content.edit
 
 class RecipeFragment : Fragment() {
 
@@ -83,14 +85,47 @@ class RecipeFragment : Fragment() {
     }
 
     private fun initUI() {
-        binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
-        binding.ibFavorite.setOnClickListener {
+        val favorites = getFavorites()
+        val isFavorite = favorites.contains(recipe?.id.toString())
+        if (isFavorite) {
             binding.ibFavorite.setImageResource(R.drawable.ic_heart)
+        } else {
+            binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
+        }
+
+        binding.ibFavorite.setOnClickListener {
+            val currentFavorites = getFavorites()
+            if (currentFavorites.contains(recipe?.id.toString())) {
+                binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
+                currentFavorites.remove(recipe?.id.toString())
+            } else {
+                binding.ibFavorite.setImageResource(R.drawable.ic_heart)
+                currentFavorites.add(recipe?.id.toString())
+            }
+            saveFavorites(currentFavorites)
         }
         binding.tvHeadingCategories.text = recipe?.title
         val image = recipe?.imageUrl?.let { context?.assets?.open(it) }.use { inputStream ->
             Drawable.createFromStream(inputStream, null)
         }
         binding.ivRecipes.setImageDrawable(image)
+    }
+
+    private fun saveFavorites(favorites: Set<String>) {
+        val sharedPref = requireContext().getSharedPreferences(SAVE_FAVORITES_ID, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putStringSet(KEY_FAVORITES_ID, favorites)
+        }
+    }
+
+    private fun getFavorites(): MutableSet<String> {
+        val sharedPref = requireContext().getSharedPreferences(SAVE_FAVORITES_ID,Context.MODE_PRIVATE)
+        val newSetPref = sharedPref?.getStringSet(KEY_FAVORITES_ID, emptySet()) ?: emptySet()
+        return HashSet(newSetPref)
+    }
+
+    companion object {
+        const val KEY_FAVORITES_ID = "favorite_id"
+        const val SAVE_FAVORITES_ID = "save_favorites"
     }
 }
