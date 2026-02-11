@@ -52,6 +52,12 @@
         <item name="android:textColor">@color/text_description</item>
     </style>
 
+    <style name="StyleEmptyItem" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/text_description</item>
+    </style>
+
     <style name="StyleSeekBar" parent="Widget.AppCompat.SeekBar">
         <item name="android:thumb">@drawable/shape_seekbar_thumb</item>
         <item name="android:progressDrawable">@drawable/shape_seekbar_progress</item>
