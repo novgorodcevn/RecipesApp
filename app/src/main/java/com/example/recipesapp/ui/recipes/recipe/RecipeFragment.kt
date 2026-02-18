@@ -1,4 +1,4 @@
-package com.example.recipesapp
+package com.example.recipesapp.ui.recipes.recipe
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -9,12 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.recipesapp.IngredientsAdapter
+import com.example.recipesapp.MethodAdapter
+import com.example.recipesapp.R
 import com.example.recipesapp.constants.ARG_RECIPE
 import com.example.recipesapp.databinding.FragmentRecipeBinding
+import com.example.recipesapp.model.Recipe
 import com.google.android.material.divider.MaterialDividerItemDecoration
-import androidx.core.content.edit
 
 class RecipeFragment : Fragment() {
 
@@ -119,7 +123,7 @@ class RecipeFragment : Fragment() {
     }
 
     private fun getFavorites(): MutableSet<String> {
-        val sharedPref = requireContext().getSharedPreferences(SAVE_FAVORITES_ID,Context.MODE_PRIVATE)
+        val sharedPref = requireContext().getSharedPreferences(SAVE_FAVORITES_ID, Context.MODE_PRIVATE)
         val newSetPref = sharedPref?.getStringSet(KEY_FAVORITES_ID, emptySet()) ?: emptySet()
         return HashSet(newSetPref)
     }
