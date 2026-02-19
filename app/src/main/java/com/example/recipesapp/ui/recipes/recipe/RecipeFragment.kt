@@ -13,13 +13,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.recipesapp.IngredientsAdapter
 import com.example.recipesapp.MethodAdapter
 import com.example.recipesapp.R
-import com.example.recipesapp.constants.ARG_RECIPE
+import com.example.recipesapp.constants.ARG_CATEGORY_ID
+import com.example.recipesapp.constants.ARG_RECIPE_ID
 import com.example.recipesapp.databinding.FragmentRecipeBinding
 import com.example.recipesapp.model.Recipe
 import com.google.android.material.divider.MaterialDividerItemDecoration
@@ -29,8 +28,7 @@ class RecipeFragment : Fragment() {
     private val viewModel: RecipeFragmentViewModel by viewModels()
     private var _binding: FragmentRecipeBinding? = null
 
-    private var recipe: Recipe? = null
-
+    private var argRecipeId: Int? = null
     private val binding
         get() = _binding
             ?: throw IllegalStateException("Binding for FragmentRecipeBinding must not be null")
@@ -46,15 +44,8 @@ class RecipeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recipe = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable(ARG_RECIPE, Recipe::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            arguments?.getParcelable(ARG_RECIPE)
-        }
-        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-            Log.i("!!!", "isFavorite = ${uiState.isFavorite}")
-        }
+        argRecipeId = requireArguments().getInt(ARG_RECIPE_ID)
+        viewModel.loadRecipe(argRecipeId)
         initUI()
         initRecycler()
     }
@@ -73,13 +64,12 @@ class RecipeFragment : Fragment() {
                 dividerColor = ContextCompat.getColor(requireContext(), R.color.nav_bar_color)
             }
 
-        val customAdapterIngredients = IngredientsAdapter(recipe?.ingredients ?: emptyList())
-        binding.rvIngredients.adapter = customAdapterIngredients
-        binding.rvIngredients.addItemDecoration(divider)
-
-        val customAdapterMethod = MethodAdapter(recipe?.method ?: emptyList())
-        binding.rvMethod.adapter = customAdapterMethod
-        binding.rvMethod.addItemDecoration(divider)
+        //    val customAdapterIngredients = IngredientsAdapter(recipe?.ingredients ?: emptyList())
+        //   binding.rvIngredients.adapter = customAdapterIngredients
+        //  binding.rvIngredients.addItemDecoration(divider)
+        //   val customAdapterMethod = MethodAdapter(recipe?.method ?: emptyList())
+        //  binding.rvMethod.adapter = customAdapterMethod
+        //  binding.rvMethod.addItemDecoration(divider)
         binding.sbRecipe.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 
             override fun onProgressChanged(
@@ -88,7 +78,7 @@ class RecipeFragment : Fragment() {
                 fromUser: Boolean
             ) {
                 binding.tvQuantityPortions.text = progress.toString()
-                customAdapterIngredients.updateIngredients(progress)
+                //       customAdapterIngredients.updateIngredients(progress)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -97,49 +87,23 @@ class RecipeFragment : Fragment() {
     }
 
     private fun initUI() {
-        val favorites = getFavorites()
-        val isFavorite = favorites.contains(recipe?.id.toString())
-        if (isFavorite) {
-            binding.ibFavorite.setImageResource(R.drawable.ic_heart)
-        } else {
-            binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
-        }
+        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+            Log.i("!!!", "isFavorite = ${uiState.isFavorite}")
 
-        binding.ibFavorite.setOnClickListener {
-            val currentFavorites = getFavorites()
-            if (currentFavorites.contains(recipe?.id.toString())) {
-                binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
-                currentFavorites.remove(recipe?.id.toString())
-            } else {
+            if (uiState.isFavorite) {
                 binding.ibFavorite.setImageResource(R.drawable.ic_heart)
-                currentFavorites.add(recipe?.id.toString())
+            } else {
+                binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
             }
-            saveFavorites(currentFavorites)
-        }
-        binding.tvHeadingCategories.text = recipe?.title
-        val image = recipe?.imageUrl?.let { context?.assets?.open(it) }.use { inputStream ->
-            Drawable.createFromStream(inputStream, null)
-        }
-        binding.ivRecipes.setImageDrawable(image)
-    }
 
-    private fun saveFavorites(favorites: Set<String>) {
-        val sharedPref =
-            requireContext().getSharedPreferences(SAVE_FAVORITES_ID, Context.MODE_PRIVATE)
-        sharedPref.edit {
-            putStringSet(KEY_FAVORITES_ID, favorites)
+            binding.ibFavorite.setOnClickListener {
+                viewModel.onFavoritesClicked(argRecipeId)
+            }
+            //   binding.tvHeadingCategories.text =
+            //  val image = recipe?.imageUrl?.let { context?.assets?.open(it) }.use { inputStream ->
+            //     Drawable.createFromStream(inputStream, null)
+            //  }
+            //  binding.ivRecipes.setImageDrawable(image)
         }
-    }
-
-    private fun getFavorites(): MutableSet<String> {
-        val sharedPref =
-            requireContext().getSharedPreferences(SAVE_FAVORITES_ID, Context.MODE_PRIVATE)
-        val newSetPref = sharedPref?.getStringSet(KEY_FAVORITES_ID, emptySet()) ?: emptySet()
-        return HashSet(newSetPref)
-    }
-
-    companion object {
-        const val KEY_FAVORITES_ID = "favorite_id"
-        const val SAVE_FAVORITES_ID = "save_favorites"
     }
 }

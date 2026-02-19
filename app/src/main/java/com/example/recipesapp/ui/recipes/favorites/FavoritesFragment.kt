@@ -13,7 +13,9 @@ import androidx.fragment.app.replace
 import com.example.recipesapp.R
 import com.example.recipesapp.ui.recipes.recipe.RecipeFragment
 import com.example.recipesapp.ui.recipes.recipeList.RecipesListAdapter
-import com.example.recipesapp.constants.ARG_RECIPE
+import com.example.recipesapp.constants.ARG_RECIPE_ID
+import com.example.recipesapp.constants.KEY_FAVORITES_ID
+import com.example.recipesapp.constants.SAVE_FAVORITES_ID
 import com.example.recipesapp.data.recipes.STUB
 import com.example.recipesapp.databinding.FragmentFavoritesBinding
 
@@ -72,7 +74,7 @@ class FavoritesFragment : Fragment() {
     private fun openRecipeByRecipeId(recipeId: Int) {
         val recipe = STUB.getRecipeById(recipeId)
         val bundle = bundleOf(
-            ARG_RECIPE to recipe
+            ARG_RECIPE_ID to recipe
         )
         parentFragmentManager.commit {
             replace<RecipeFragment>(R.id.mainContainer, args = bundle)
@@ -83,8 +85,8 @@ class FavoritesFragment : Fragment() {
 
     private fun getFavorites(): MutableSet<String> {
         val sharedPref =
-            requireContext().getSharedPreferences(RecipeFragment.Companion.SAVE_FAVORITES_ID, Context.MODE_PRIVATE)
-        val newSetPref = sharedPref?.getStringSet(RecipeFragment.Companion.KEY_FAVORITES_ID, emptySet()) ?: emptySet()
+            requireContext().getSharedPreferences(SAVE_FAVORITES_ID, Context.MODE_PRIVATE)
+        val newSetPref = sharedPref?.getStringSet(KEY_FAVORITES_ID, emptySet()) ?: emptySet()
         return HashSet(newSetPref)
     }
 }
