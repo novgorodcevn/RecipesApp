@@ -19,6 +19,7 @@ import com.example.recipesapp.MethodAdapter
 import com.example.recipesapp.R
 import com.example.recipesapp.constants.ARG_CATEGORY_ID
 import com.example.recipesapp.constants.ARG_RECIPE_ID
+import com.example.recipesapp.data.recipes.STUB
 import com.example.recipesapp.databinding.FragmentRecipeBinding
 import com.example.recipesapp.model.Recipe
 import com.google.android.material.divider.MaterialDividerItemDecoration
@@ -78,7 +79,7 @@ class RecipeFragment : Fragment() {
                 fromUser: Boolean
             ) {
                 binding.tvQuantityPortions.text = progress.toString()
-                //       customAdapterIngredients.updateIngredients(progress)
+                //      customAdapterIngredients.updateIngredients(progress)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -99,11 +100,11 @@ class RecipeFragment : Fragment() {
             binding.ibFavorite.setOnClickListener {
                 viewModel.onFavoritesClicked()
             }
-            //   binding.tvHeadingCategories.text =
-            //  val image = recipe?.imageUrl?.let { context?.assets?.open(it) }.use { inputStream ->
-            //     Drawable.createFromStream(inputStream, null)
-            //  }
-            //  binding.ivRecipes.setImageDrawable(image)
+            binding.tvHeadingCategories.text = uiState.headingTitle
+            // val image = STUB.getRecipeById(argRecipeId)?.imageUrl?.let { context?.assets?.open(it) }.use { inputStream ->
+            //      Drawable.createFromStream(inputStream, null)
+            //    }
+            //    binding.ivRecipes.setImageDrawable(image)
         }
     }
 }

@@ -16,7 +16,8 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
     data class RecipeUiState(
         val recipe: Recipe? = null,
         val portions: Int = 1,
-        val isFavorite: Boolean = false
+        val isFavorite: Boolean = false,
+        val headingTitle: String? = null
     )
 
     private val sharedPref =
@@ -39,7 +40,8 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
             mutableUIState.value = RecipeUiState(
                 recipe = STUB.getRecipeById(recipeId),
                 isFavorite = favorites.contains(recipeId.toString()),
-                portions = 1
+                portions =  mutableUIState.value?.portions ?: 1,
+                headingTitle = STUB.getRecipeById(recipeId)?.title
             )
         }
     }
