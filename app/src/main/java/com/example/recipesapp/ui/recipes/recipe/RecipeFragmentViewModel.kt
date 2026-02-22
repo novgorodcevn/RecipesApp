@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.recipesapp.constants.KEY_FAVORITES_ID
 import com.example.recipesapp.constants.SAVE_FAVORITES_ID
 import com.example.recipesapp.data.recipes.STUB
+import com.example.recipesapp.model.Ingredient
 import com.example.recipesapp.model.Recipe
 
 class RecipeFragmentViewModel(application: Application) : AndroidViewModel(application) {
@@ -18,7 +19,10 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
         val recipe: Recipe? = null,
         val portions: Int = 1,
         val isFavorite: Boolean = false,
-        val recipeImage: Drawable? = null
+        val recipeImage: Drawable? = null,
+        val ingredientsList: List<Ingredient>? = null,
+        val methodList: List<String> ? = null,
+        val tvHeading: String ? = null,
     )
 
     private val sharedPref =
@@ -52,7 +56,11 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
                 recipe = STUB.getRecipeById(recipeId),
                 isFavorite = favorites.contains(recipeId.toString()),
                 portions = 1,
-                recipeImage = drawable
+                recipeImage = drawable,
+                ingredientsList = STUB.getRecipeById(recipeId)?.ingredients ?: emptyList(),
+                methodList = STUB.getRecipeById(recipeId)?.method ?: emptyList(),
+                tvHeading = STUB.getRecipeById(recipeId)?.title
+
             )
         }
     }

@@ -56,34 +56,6 @@ class RecipeFragment : Fragment() {
     }
 
     private fun initRecycler() {
-        val divider =
-            MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL).apply {
-                dividerInsetStart = resources.getDimensionPixelOffset(R.dimen.margin_big)
-                dividerInsetEnd = resources.getDimensionPixelOffset(R.dimen.margin_big)
-                isLastItemDecorated = false
-                dividerColor = ContextCompat.getColor(requireContext(), R.color.nav_bar_color)
-            }
-
-        //    val customAdapterIngredients = IngredientsAdapter(recipe?.ingredients ?: emptyList())
-        //   binding.rvIngredients.adapter = customAdapterIngredients
-        //  binding.rvIngredients.addItemDecoration(divider)
-        //   val customAdapterMethod = MethodAdapter(recipe?.method ?: emptyList())
-        //  binding.rvMethod.adapter = customAdapterMethod
-        //  binding.rvMethod.addItemDecoration(divider)
-        binding.sbRecipe.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-
-            override fun onProgressChanged(
-                seekBar: SeekBar?,
-                progress: Int,
-                fromUser: Boolean
-            ) {
-                binding.tvQuantityPortions.text = progress.toString()
-                //       customAdapterIngredients.updateIngredients(progress)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
     }
 
     private fun initUI() {
@@ -99,7 +71,38 @@ class RecipeFragment : Fragment() {
             binding.ibFavorite.setOnClickListener {
                 viewModel.onFavoritesClicked()
             }
-            //   binding.tvHeadingCategories.text =
+            binding.tvHeadingCategories.text = uiState.tvHeading
+            val divider =
+                MaterialDividerItemDecoration(
+                    requireContext(),
+                    LinearLayoutManager.VERTICAL
+                ).apply {
+                    dividerInsetStart = resources.getDimensionPixelOffset(R.dimen.margin_big)
+                    dividerInsetEnd = resources.getDimensionPixelOffset(R.dimen.margin_big)
+                    isLastItemDecorated = false
+                    dividerColor = ContextCompat.getColor(requireContext(), R.color.nav_bar_color)
+                }
+
+            val customAdapterIngredients = IngredientsAdapter(uiState.ingredientsList ?: emptyList())
+            binding.rvIngredients.adapter = customAdapterIngredients
+            binding.rvIngredients.addItemDecoration(divider)
+            val customAdapterMethod = MethodAdapter(uiState.methodList ?: emptyList())
+            binding.rvMethod.adapter = customAdapterMethod
+            binding.rvMethod.addItemDecoration(divider)
+            binding.sbRecipe.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+
+                override fun onProgressChanged(
+                    seekBar: SeekBar?,
+                    progress: Int,
+                    fromUser: Boolean
+                ) {
+                    binding.tvQuantityPortions.text = progress.toString()
+                    //       customAdapterIngredients.updateIngredients(progress)
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+            })
         }
     }
 }
