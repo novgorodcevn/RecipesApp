@@ -2,6 +2,7 @@ package com.example.recipesapp.ui.recipes.recipe
 
 import android.app.Application
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
@@ -16,7 +17,8 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
     data class RecipeUiState(
         val recipe: Recipe? = null,
         val portions: Int = 1,
-        val isFavorite: Boolean = false
+        val isFavorite: Boolean = false,
+        val recipeImage: Drawable? = null
     )
 
     private val sharedPref =
@@ -27,6 +29,8 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
 
     private var currentRecipeId: Int? = null
 
+
+
     init {
         Log.d("InitRecipeView", "избранное = false")
 
@@ -35,11 +39,20 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
     fun loadRecipe(recipeId: Int?) {
         // TODO: load from network
         if (recipeId != null) {
+            val drawable = try {
+                STUB.getRecipeById(recipeId)?.imageUrl?.let { getApplication<Application>().assets?.open(it) }
+                    .use { inputStream ->
+                        Drawable.createFromStream(inputStream, null)
+                    }
+            } catch (e: Exception) {
+                null
+            }
             currentRecipeId = recipeId
             mutableUIState.value = RecipeUiState(
                 recipe = STUB.getRecipeById(recipeId),
                 isFavorite = favorites.contains(recipeId.toString()),
-                portions = 1
+                portions = 1,
+                recipeImage = drawable
             )
         }
     }
