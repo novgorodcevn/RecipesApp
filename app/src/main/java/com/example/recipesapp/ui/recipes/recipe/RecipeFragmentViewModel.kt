@@ -21,11 +21,11 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
 
     private val sharedPref =
         application.getSharedPreferences(SAVE_FAVORITES_ID, Context.MODE_PRIVATE)
-    private val sharedPrefSave =
-        application.getSharedPreferences(SAVE_FAVORITES_ID, Context.MODE_PRIVATE)
     private val favorites = getFavorites()
     private val mutableUIState = MutableLiveData<RecipeUiState>()
     val uiState: LiveData<RecipeUiState> get() = mutableUIState
+
+    private var currentRecipeId: Int? = null
 
     init {
         Log.d("InitRecipeView", "избранное = false")
@@ -35,28 +35,27 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
     fun loadRecipe(recipeId: Int?) {
         // TODO: load from network
         if (recipeId != null) {
-            mutableUIState.value = RecipeUiState(recipe = STUB.getRecipeById(recipeId))
-            val isFavorite = favorites.contains(recipeId.toString())
-            if (isFavorite) {
-                mutableUIState.value = RecipeUiState(isFavorite = true)
-            } else {
-                mutableUIState.value = RecipeUiState(isFavorite = false)
-            }
-            mutableUIState.value = RecipeUiState(portions = 1)
+            currentRecipeId = recipeId
+            mutableUIState.value = RecipeUiState(
+                recipe = STUB.getRecipeById(recipeId),
+                isFavorite = favorites.contains(recipeId.toString()),
+                portions = 1
+            )
         }
     }
 
-   fun onFavoritesClicked(recipeId: Int?) {
-       val currentState = mutableUIState.value ?: RecipeUiState()
-       val currentFavorites = getFavorites()
-       if (currentFavorites.contains(recipeId.toString())) {
-           mutableUIState.value = currentState.copy(isFavorite = false)
-           currentFavorites.remove(recipeId.toString())
-       } else {
-           mutableUIState.value = currentState.copy(isFavorite = true)
-           currentFavorites.add(recipeId.toString())
-       }
-       saveFavorites(currentFavorites)
+    fun onFavoritesClicked() {
+        val recipeId = currentRecipeId ?: return
+        val currentState = mutableUIState.value ?: RecipeUiState()
+        val currentFavorites = getFavorites()
+        if (currentFavorites.contains(recipeId.toString())) {
+            mutableUIState.value = currentState.copy(isFavorite = false)
+            currentFavorites.remove(recipeId.toString())
+        } else {
+            mutableUIState.value = currentState.copy(isFavorite = true)
+            currentFavorites.add(recipeId.toString())
+        }
+        saveFavorites(currentFavorites)
     }
 
     private fun getFavorites(): MutableSet<String> {
@@ -65,7 +64,7 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
     }
 
     private fun saveFavorites(favorites: Set<String>) {
-        sharedPrefSave.edit {
+        sharedPref.edit {
             putStringSet(KEY_FAVORITES_ID, favorites)
         }
     }

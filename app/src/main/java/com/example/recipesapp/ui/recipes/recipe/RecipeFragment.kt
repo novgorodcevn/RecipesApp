@@ -97,7 +97,7 @@ class RecipeFragment : Fragment() {
             }
 
             binding.ibFavorite.setOnClickListener {
-                viewModel.onFavoritesClicked(argRecipeId)
+                viewModel.onFavoritesClicked()
             }
             //   binding.tvHeadingCategories.text =
             //  val image = recipe?.imageUrl?.let { context?.assets?.open(it) }.use { inputStream ->
