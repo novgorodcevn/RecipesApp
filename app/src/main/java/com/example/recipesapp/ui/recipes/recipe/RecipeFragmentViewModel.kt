@@ -17,8 +17,7 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
     data class RecipeUiState(
         val recipe: Recipe? = null,
         val portions: Int = 1,
-        val isFavorite: Boolean = false,
-        val recipeImage: Drawable? = null
+        val recipeImage: Drawable? = null,
         val isFavorite: Boolean = false,
         val headingTitle: String? = null
     )
@@ -32,7 +31,6 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
     private var currentRecipeId: Int? = null
 
 
-
     init {
         Log.d("InitRecipeView", "избранное = false")
 
@@ -42,7 +40,11 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
         // TODO: load from network
         if (recipeId != null) {
             val drawable = try {
-                STUB.getRecipeById(recipeId)?.imageUrl?.let { getApplication<Application>().assets?.open(it) }
+                STUB.getRecipeById(recipeId)?.imageUrl?.let {
+                    getApplication<Application>().assets?.open(
+                        it
+                    )
+                }
                     .use { inputStream ->
                         Drawable.createFromStream(inputStream, null)
                     }
@@ -53,9 +55,8 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
             mutableUIState.value = RecipeUiState(
                 recipe = STUB.getRecipeById(recipeId),
                 isFavorite = favorites.contains(recipeId.toString()),
-                portions = 1,
-                recipeImage = drawable
-                portions =  mutableUIState.value?.portions ?: 1,
+                recipeImage = drawable,
+                portions = mutableUIState.value?.portions ?: 1,
                 headingTitle = STUB.getRecipeById(recipeId)?.title
             )
         }

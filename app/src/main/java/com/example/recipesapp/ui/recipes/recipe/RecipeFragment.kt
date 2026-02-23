@@ -96,16 +96,8 @@ class RecipeFragment : Fragment() {
                 binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
             }
             binding.tvHeadingCategories.text = uiState.headingTitle
-            // val image = STUB.getRecipeById(argRecipeId)?.imageUrl?.let { context?.assets?.open(it) }.use { inputStream ->
-            //      Drawable.createFromStream(inputStream, null)
-            //    }
-            //    binding.ivRecipes.setImageDrawable(image)
             binding.ivRecipes.setImageDrawable(uiState.recipeImage)
-            binding.ibFavorite.setOnClickListener {
-                viewModel.onFavoritesClicked()
             }
-            //   binding.tvHeadingCategories.text =
-        }
         binding.ibFavorite.setOnClickListener {
             viewModel.onFavoritesClicked()
         }
