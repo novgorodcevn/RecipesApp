@@ -96,15 +96,14 @@ class RecipeFragment : Fragment() {
             } else {
                 binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
             }
-
-            binding.ibFavorite.setOnClickListener {
-                viewModel.onFavoritesClicked()
-            }
             binding.tvHeadingCategories.text = uiState.headingTitle
             // val image = STUB.getRecipeById(argRecipeId)?.imageUrl?.let { context?.assets?.open(it) }.use { inputStream ->
             //      Drawable.createFromStream(inputStream, null)
             //    }
             //    binding.ivRecipes.setImageDrawable(image)
+        }
+        binding.ibFavorite.setOnClickListener {
+            viewModel.onFavoritesClicked()
         }
     }
 }
