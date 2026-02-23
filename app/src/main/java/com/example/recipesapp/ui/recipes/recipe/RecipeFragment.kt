@@ -71,6 +71,9 @@ class RecipeFragment : Fragment() {
             binding.ibFavorite.setOnClickListener {
                 viewModel.onFavoritesClicked()
             }
+            binding.tvQuantityPortions.text = uiState.portions.toString()
+
+
             binding.tvHeadingCategories.text = uiState.tvHeading
             val divider =
                 MaterialDividerItemDecoration(
@@ -89,6 +92,7 @@ class RecipeFragment : Fragment() {
             val customAdapterMethod = MethodAdapter(uiState.methodList ?: emptyList())
             binding.rvMethod.adapter = customAdapterMethod
             binding.rvMethod.addItemDecoration(divider)
+            customAdapterIngredients.updateIngredients(uiState.portions)
             binding.sbRecipe.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 
                 override fun onProgressChanged(
@@ -96,8 +100,7 @@ class RecipeFragment : Fragment() {
                     progress: Int,
                     fromUser: Boolean
                 ) {
-                    binding.tvQuantityPortions.text = progress.toString()
-                    //       customAdapterIngredients.updateIngredients(progress)
+                    viewModel.updatingPortions(progress)
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}

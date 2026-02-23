@@ -55,7 +55,7 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
             mutableUIState.value = RecipeUiState(
                 recipe = STUB.getRecipeById(recipeId),
                 isFavorite = favorites.contains(recipeId.toString()),
-                portions = 1,
+                portions =  mutableUIState.value?.portions ?: 1,
                 recipeImage = drawable,
                 ingredientsList = STUB.getRecipeById(recipeId)?.ingredients ?: emptyList(),
                 methodList = STUB.getRecipeById(recipeId)?.method ?: emptyList(),
@@ -77,6 +77,11 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
             currentFavorites.add(recipeId.toString())
         }
         saveFavorites(currentFavorites)
+    }
+
+    fun updatingPortions(portionsCount: Int) {
+        val currentState = mutableUIState.value ?: RecipeUiState()
+        mutableUIState.value = currentState.copy(portions = portionsCount)
     }
 
     private fun getFavorites(): MutableSet<String> {
