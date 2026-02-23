@@ -11,11 +11,10 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.example.recipesapp.R
 import com.example.recipesapp.ui.recipes.recipe.RecipeFragment
-import com.example.recipesapp.ui.recipes.recipeList.RecipesListAdapter
 import com.example.recipesapp.constants.ARG_CATEGORY_ID
 import com.example.recipesapp.constants.ARG_CATEGORY_IMAGE_URL
 import com.example.recipesapp.constants.ARG_CATEGORY_NAME
-import com.example.recipesapp.constants.ARG_RECIPE
+import com.example.recipesapp.constants.ARG_RECIPE_ID
 import com.example.recipesapp.data.recipes.STUB
 import com.example.recipesapp.databinding.FragmentListRecipesBinding
 
@@ -69,9 +68,8 @@ class RecipesListFragment : Fragment() {
     }
 
     private fun openRecipeByRecipeId(recipeId: Int) {
-        val recipe = STUB.getRecipeById(recipeId)
         val bundle = bundleOf(
-            ARG_RECIPE to recipe
+            ARG_RECIPE_ID to recipeId
         )
         parentFragmentManager.commit {
             replace<RecipeFragment>(R.id.mainContainer,args = bundle)
