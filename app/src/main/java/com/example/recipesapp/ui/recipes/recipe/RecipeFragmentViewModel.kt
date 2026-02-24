@@ -49,6 +49,7 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
                         Drawable.createFromStream(inputStream, null)
                     }
             } catch (e: Exception) {
+                Log.e("RecipeViewModel", "Ошибка загрузки изображения", e)
                 null
             }
             currentRecipeId = recipeId
