@@ -21,10 +21,9 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
         val recipeImage: Drawable? = null,
         val isFavorite: Boolean = false,
         val headingTitle: String? = null,
-        val tvHeading: String ? = null,
+        val tvHeading: String? = null,
         val ingredientsList: List<Ingredient>? = null,
-        val methodList: List<String> ? = null,
-
+        val methodList: List<String>? = null,
     )
 
     private val sharedPref =
@@ -34,8 +33,6 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
     val uiState: LiveData<RecipeUiState> get() = mutableUIState
 
     private var currentRecipeId: Int? = null
-
-
 
     init {
         Log.d("InitRecipeView", "избранное = false")
@@ -62,12 +59,11 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
             mutableUIState.value = RecipeUiState(
                 recipe = STUB.getRecipeById(recipeId),
                 isFavorite = favorites.contains(recipeId.toString()),
-                portions =  mutableUIState.value?.portions ?: 1,
+                portions = mutableUIState.value?.portions ?: 1,
                 recipeImage = drawable,
                 ingredientsList = STUB.getRecipeById(recipeId)?.ingredients ?: emptyList(),
                 methodList = STUB.getRecipeById(recipeId)?.method ?: emptyList(),
                 tvHeading = STUB.getRecipeById(recipeId)?.title
-
             )
         }
     }

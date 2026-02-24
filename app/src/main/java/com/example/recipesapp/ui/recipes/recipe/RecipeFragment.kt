@@ -72,8 +72,6 @@ class RecipeFragment : Fragment() {
                 viewModel.onFavoritesClicked()
             }
             binding.tvQuantityPortions.text = uiState.portions.toString()
-
-
             binding.tvHeadingCategories.text = uiState.tvHeading
             val divider =
                 MaterialDividerItemDecoration(
@@ -86,7 +84,8 @@ class RecipeFragment : Fragment() {
                     dividerColor = ContextCompat.getColor(requireContext(), R.color.nav_bar_color)
                 }
 
-            val customAdapterIngredients = IngredientsAdapter(uiState.ingredientsList ?: emptyList())
+            val customAdapterIngredients =
+                IngredientsAdapter(uiState.ingredientsList ?: emptyList())
             binding.rvIngredients.adapter = customAdapterIngredients
             binding.rvIngredients.addItemDecoration(divider)
             val customAdapterMethod = MethodAdapter(uiState.methodList ?: emptyList())
@@ -102,35 +101,11 @@ class RecipeFragment : Fragment() {
                 ) {
                     viewModel.updatingPortions(progress)
                 }
-            override fun onProgressChanged(
-                seekBar: SeekBar?,
-                progress: Int,
-                fromUser: Boolean
-            ) {
-                binding.tvQuantityPortions.text = progress.toString()
-                //      customAdapterIngredients.updateIngredients(progress)
-            }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {}
             })
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-    }
-
-    private fun initUI() {
-        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-            Log.i("!!!", "isFavorite = ${uiState.isFavorite}")
-
-            if (uiState.isFavorite) {
-                binding.ibFavorite.setImageResource(R.drawable.ic_heart)
-            } else {
-                binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
-            }
-            binding.tvHeadingCategories.text = uiState.headingTitle
-            binding.ivRecipes.setImageDrawable(uiState.recipeImage)
-            }
+        }
         binding.ibFavorite.setOnClickListener {
             viewModel.onFavoritesClicked()
         }
