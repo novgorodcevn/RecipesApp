@@ -18,11 +18,13 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
     data class RecipeUiState(
         val recipe: Recipe? = null,
         val portions: Int = 1,
-        val isFavorite: Boolean = false,
         val recipeImage: Drawable? = null,
+        val isFavorite: Boolean = false,
+        val headingTitle: String? = null,
+        val tvHeading: String ? = null,
         val ingredientsList: List<Ingredient>? = null,
         val methodList: List<String> ? = null,
-        val tvHeading: String ? = null,
+
     )
 
     private val sharedPref =
@@ -44,11 +46,16 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
         // TODO: load from network
         if (recipeId != null) {
             val drawable = try {
-                STUB.getRecipeById(recipeId)?.imageUrl?.let { getApplication<Application>().assets?.open(it) }
+                STUB.getRecipeById(recipeId)?.imageUrl?.let {
+                    getApplication<Application>().assets?.open(
+                        it
+                    )
+                }
                     .use { inputStream ->
                         Drawable.createFromStream(inputStream, null)
                     }
             } catch (e: Exception) {
+                Log.e("RecipeViewModel", "Ошибка загрузки изображения", e)
                 null
             }
             currentRecipeId = recipeId

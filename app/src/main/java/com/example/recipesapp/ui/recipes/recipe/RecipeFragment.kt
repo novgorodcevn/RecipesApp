@@ -102,10 +102,37 @@ class RecipeFragment : Fragment() {
                 ) {
                     viewModel.updatingPortions(progress)
                 }
+            override fun onProgressChanged(
+                seekBar: SeekBar?,
+                progress: Int,
+                fromUser: Boolean
+            ) {
+                binding.tvQuantityPortions.text = progress.toString()
+                //      customAdapterIngredients.updateIngredients(progress)
+            }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {}
             })
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+    }
+
+    private fun initUI() {
+        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+            Log.i("!!!", "isFavorite = ${uiState.isFavorite}")
+
+            if (uiState.isFavorite) {
+                binding.ibFavorite.setImageResource(R.drawable.ic_heart)
+            } else {
+                binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
+            }
+            binding.tvHeadingCategories.text = uiState.headingTitle
+            binding.ivRecipes.setImageDrawable(uiState.recipeImage)
+            }
+        binding.ibFavorite.setOnClickListener {
+            viewModel.onFavoritesClicked()
         }
     }
 }
