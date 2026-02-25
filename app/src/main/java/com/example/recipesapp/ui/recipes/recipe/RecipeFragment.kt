@@ -47,7 +47,6 @@ class RecipeFragment : Fragment() {
         argRecipeId = requireArguments().getInt(ARG_RECIPE_ID)
         viewModel.loadRecipe(argRecipeId)
         initUI()
-        initRecycler()
     }
 
     override fun onDestroyView() {
@@ -55,10 +54,8 @@ class RecipeFragment : Fragment() {
         _binding = null
     }
 
-    private fun initRecycler() {
-    }
-
     private fun initUI() {
+
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
             Log.i("!!!", "isFavorite = ${uiState.isFavorite}")
 
@@ -68,46 +65,41 @@ class RecipeFragment : Fragment() {
                 binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
             }
             binding.ivRecipes.setImageDrawable(uiState.recipeImage)
-            binding.ibFavorite.setOnClickListener {
-                viewModel.onFavoritesClicked()
-            }
             binding.tvQuantityPortions.text = uiState.portions.toString()
             binding.tvHeadingCategories.text = uiState.tvHeading
-            val divider =
-                MaterialDividerItemDecoration(
-                    requireContext(),
-                    LinearLayoutManager.VERTICAL
-                ).apply {
-                    dividerInsetStart = resources.getDimensionPixelOffset(R.dimen.margin_big)
-                    dividerInsetEnd = resources.getDimensionPixelOffset(R.dimen.margin_big)
-                    isLastItemDecorated = false
-                    dividerColor = ContextCompat.getColor(requireContext(), R.color.nav_bar_color)
-                }
-
             val customAdapterIngredients =
                 IngredientsAdapter(uiState.ingredientsList ?: emptyList())
             binding.rvIngredients.adapter = customAdapterIngredients
-            binding.rvIngredients.addItemDecoration(divider)
             val customAdapterMethod = MethodAdapter(uiState.methodList ?: emptyList())
             binding.rvMethod.adapter = customAdapterMethod
-            binding.rvMethod.addItemDecoration(divider)
             customAdapterIngredients.updateIngredients(uiState.portions)
-            binding.sbRecipe.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
-                    viewModel.updatingPortions(progress)
-                }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-            })
         }
+        binding.sbRecipe.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+
+            override fun onProgressChanged(
+                seekBar: SeekBar?,
+                progress: Int,
+                fromUser: Boolean
+            ) {
+                viewModel.updatingPortions(progress)
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
         binding.ibFavorite.setOnClickListener {
             viewModel.onFavoritesClicked()
         }
+        val divider =
+            MaterialDividerItemDecoration(
+                requireContext(),
+                LinearLayoutManager.VERTICAL
+            ).apply {
+                dividerInsetStart = resources.getDimensionPixelOffset(R.dimen.margin_big)
+                dividerInsetEnd = resources.getDimensionPixelOffset(R.dimen.margin_big)
+                isLastItemDecorated = false
+                dividerColor = ContextCompat.getColor(requireContext(), R.color.nav_bar_color)
+            }
+        binding.rvIngredients.addItemDecoration(divider)
+        binding.rvMethod.addItemDecoration(divider)
     }
 }
