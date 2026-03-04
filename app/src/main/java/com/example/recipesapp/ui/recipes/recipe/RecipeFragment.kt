@@ -25,6 +25,21 @@ import com.google.android.material.divider.MaterialDividerItemDecoration
 
 class RecipeFragment : Fragment() {
 
+    class PortionSeekBarListener(val onChangeIngredients: (Int) -> Unit) :
+        SeekBar.OnSeekBarChangeListener {
+        override fun onProgressChanged(
+            seekBar: SeekBar?,
+            progress: Int,
+            fromUser: Boolean
+        ) {
+            onChangeIngredients(progress)
+        }
+
+        override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+        override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+
+    }
+
     private val viewModel: RecipeFragmentViewModel by viewModels()
     private var _binding: FragmentRecipeBinding? = null
 
@@ -81,18 +96,10 @@ class RecipeFragment : Fragment() {
             customAdapterMethod.updateList(uiState.methodList ?: emptyList())
             customAdapterIngredients.updateIngredients(uiState.portions)
         }
-        binding.sbRecipe.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-
-            override fun onProgressChanged(
-                seekBar: SeekBar?,
-                progress: Int,
-                fromUser: Boolean
-            ) {
-                viewModel.updatingPortions(progress)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        binding.sbRecipe.setOnSeekBarChangeListener(PortionSeekBarListener { progress ->
+            viewModel.updatingPortions(
+                progress
+            )
         })
         binding.ibFavorite.setOnClickListener {
             viewModel.onFavoritesClicked()
