@@ -5,9 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipesapp.databinding.ItemMethodBinding
+import com.example.recipesapp.model.Ingredient
 
-class MethodAdapter(private val dataSet: List<String>) :
+class MethodAdapter(private var dataSet: List<String>) :
     RecyclerView.Adapter<MethodAdapter.ViewHolder>() {
+
+    fun updateList(dataSetNew: List<String>) {
+        dataSet = dataSetNew
+        notifyDataSetChanged()
+    }
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val binding = ItemMethodBinding.bind(itemView)
     }

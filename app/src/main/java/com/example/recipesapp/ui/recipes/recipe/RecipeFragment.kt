@@ -29,6 +29,9 @@ class RecipeFragment : Fragment() {
     private var _binding: FragmentRecipeBinding? = null
 
     private var argRecipeId: Int? = null
+
+    private lateinit var customAdapterIngredients: IngredientsAdapter
+    private lateinit var customAdapterMethod: MethodAdapter
     private val binding
         get() = _binding
             ?: throw IllegalStateException("Binding for FragmentRecipeBinding must not be null")
@@ -56,6 +59,12 @@ class RecipeFragment : Fragment() {
 
     private fun initUI() {
 
+        customAdapterIngredients = IngredientsAdapter(emptyList())
+        binding.rvIngredients.adapter = customAdapterIngredients
+
+        customAdapterMethod = MethodAdapter(emptyList())
+        binding.rvMethod.adapter = customAdapterMethod
+
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
             Log.i("!!!", "isFavorite = ${uiState.isFavorite}")
 
@@ -67,11 +76,9 @@ class RecipeFragment : Fragment() {
             binding.ivRecipes.setImageDrawable(uiState.recipeImage)
             binding.tvQuantityPortions.text = uiState.portions.toString()
             binding.tvHeadingCategories.text = uiState.tvHeading
-            val customAdapterIngredients =
-                IngredientsAdapter(uiState.ingredientsList ?: emptyList())
-            binding.rvIngredients.adapter = customAdapterIngredients
-            val customAdapterMethod = MethodAdapter(uiState.methodList ?: emptyList())
-            binding.rvMethod.adapter = customAdapterMethod
+
+            customAdapterIngredients.updateList(uiState.ingredientsList ?: emptyList())
+            customAdapterMethod.updateList(uiState.methodList ?: emptyList())
             customAdapterIngredients.updateIngredients(uiState.portions)
         }
         binding.sbRecipe.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -83,6 +90,7 @@ class RecipeFragment : Fragment() {
             ) {
                 viewModel.updatingPortions(progress)
             }
+
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
