@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.recipesapp.constants.KEY_FAVORITES_ID
 import com.example.recipesapp.constants.SAVE_FAVORITES_ID
 import com.example.recipesapp.data.recipes.STUB
+import com.example.recipesapp.model.Ingredient
 import com.example.recipesapp.model.Recipe
 
 class RecipeFragmentViewModel(application: Application) : AndroidViewModel(application) {
@@ -19,7 +20,9 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
         val portions: Int = 1,
         val recipeImage: Drawable? = null,
         val isFavorite: Boolean = false,
-        val headingTitle: String? = null
+        val tvHeading: String? = null,
+        val ingredientsList: List<Ingredient>? = null,
+        val methodList: List<String>? = null,
     )
 
     private val sharedPref =
@@ -29,12 +32,6 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
     val uiState: LiveData<RecipeUiState> get() = mutableUIState
 
     private var currentRecipeId: Int? = null
-
-
-    init {
-        Log.d("InitRecipeView", "избранное = false")
-
-    }
 
     fun loadRecipe(recipeId: Int?) {
         // TODO: load from network
@@ -56,9 +53,11 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
             mutableUIState.value = RecipeUiState(
                 recipe = STUB.getRecipeById(recipeId),
                 isFavorite = favorites.contains(recipeId.toString()),
-                recipeImage = drawable,
                 portions = mutableUIState.value?.portions ?: 1,
-                headingTitle = STUB.getRecipeById(recipeId)?.title
+                recipeImage = drawable,
+                ingredientsList = STUB.getRecipeById(recipeId)?.ingredients ?: emptyList(),
+                methodList = STUB.getRecipeById(recipeId)?.method ?: emptyList(),
+                tvHeading = STUB.getRecipeById(recipeId)?.title
             )
         }
     }
@@ -75,6 +74,11 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
             currentFavorites.add(recipeId.toString())
         }
         saveFavorites(currentFavorites)
+    }
+
+    fun updatingPortions(portionsCount: Int) {
+        val currentState = mutableUIState.value ?: RecipeUiState()
+        mutableUIState.value = currentState.copy(portions = portionsCount)
     }
 
     private fun getFavorites(): MutableSet<String> {

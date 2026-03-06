@@ -29,6 +29,9 @@ class RecipeFragment : Fragment() {
     private var _binding: FragmentRecipeBinding? = null
 
     private var argRecipeId: Int? = null
+
+    private lateinit var customAdapterIngredients: IngredientsAdapter
+    private lateinit var customAdapterMethod: MethodAdapter
     private val binding
         get() = _binding
             ?: throw IllegalStateException("Binding for FragmentRecipeBinding must not be null")
@@ -47,7 +50,6 @@ class RecipeFragment : Fragment() {
         argRecipeId = requireArguments().getInt(ARG_RECIPE_ID)
         viewModel.loadRecipe(argRecipeId)
         initUI()
-        initRecycler()
     }
 
     override fun onDestroyView() {
@@ -55,21 +57,29 @@ class RecipeFragment : Fragment() {
         _binding = null
     }
 
-    private fun initRecycler() {
-        val divider =
-            MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL).apply {
-                dividerInsetStart = resources.getDimensionPixelOffset(R.dimen.margin_big)
-                dividerInsetEnd = resources.getDimensionPixelOffset(R.dimen.margin_big)
-                isLastItemDecorated = false
-                dividerColor = ContextCompat.getColor(requireContext(), R.color.nav_bar_color)
-            }
+    private fun initUI() {
 
-        //    val customAdapterIngredients = IngredientsAdapter(recipe?.ingredients ?: emptyList())
-        //   binding.rvIngredients.adapter = customAdapterIngredients
-        //  binding.rvIngredients.addItemDecoration(divider)
-        //   val customAdapterMethod = MethodAdapter(recipe?.method ?: emptyList())
-        //  binding.rvMethod.adapter = customAdapterMethod
-        //  binding.rvMethod.addItemDecoration(divider)
+        customAdapterIngredients = IngredientsAdapter(emptyList())
+        binding.rvIngredients.adapter = customAdapterIngredients
+
+        customAdapterMethod = MethodAdapter(emptyList())
+        binding.rvMethod.adapter = customAdapterMethod
+
+        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+
+            if (uiState.isFavorite) {
+                binding.ibFavorite.setImageResource(R.drawable.ic_heart)
+            } else {
+                binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
+            }
+            binding.ivRecipes.setImageDrawable(uiState.recipeImage)
+            binding.tvQuantityPortions.text = uiState.portions.toString()
+            binding.tvHeadingCategories.text = uiState.tvHeading
+
+            customAdapterIngredients.updateList(uiState.ingredientsList ?: emptyList())
+            customAdapterMethod.updateList(uiState.methodList ?: emptyList())
+            customAdapterIngredients.updateIngredients(uiState.portions)
+        }
         binding.sbRecipe.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 
             override fun onProgressChanged(
@@ -77,29 +87,26 @@ class RecipeFragment : Fragment() {
                 progress: Int,
                 fromUser: Boolean
             ) {
-                binding.tvQuantityPortions.text = progress.toString()
-                //      customAdapterIngredients.updateIngredients(progress)
+                viewModel.updatingPortions(progress)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
-    }
-
-    private fun initUI() {
-        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-            Log.i("!!!", "isFavorite = ${uiState.isFavorite}")
-
-            if (uiState.isFavorite) {
-                binding.ibFavorite.setImageResource(R.drawable.ic_heart)
-            } else {
-                binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
-            }
-            binding.tvHeadingCategories.text = uiState.headingTitle
-            binding.ivRecipes.setImageDrawable(uiState.recipeImage)
-            }
         binding.ibFavorite.setOnClickListener {
             viewModel.onFavoritesClicked()
         }
+        val divider =
+            MaterialDividerItemDecoration(
+                requireContext(),
+                LinearLayoutManager.VERTICAL
+            ).apply {
+                dividerInsetStart = resources.getDimensionPixelOffset(R.dimen.margin_big)
+                dividerInsetEnd = resources.getDimensionPixelOffset(R.dimen.margin_big)
+                isLastItemDecorated = false
+                dividerColor = ContextCompat.getColor(requireContext(), R.color.nav_bar_color)
+            }
+        binding.rvIngredients.addItemDecoration(divider)
+        binding.rvMethod.addItemDecoration(divider)
     }
 }
