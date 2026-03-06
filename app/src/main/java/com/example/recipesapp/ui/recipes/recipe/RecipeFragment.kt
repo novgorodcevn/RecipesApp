@@ -1,26 +1,19 @@
 package com.example.recipesapp.ui.recipes.recipe
 
-import android.content.Context
-import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.recipesapp.IngredientsAdapter
 import com.example.recipesapp.MethodAdapter
 import com.example.recipesapp.R
-import com.example.recipesapp.constants.ARG_CATEGORY_ID
 import com.example.recipesapp.constants.ARG_RECIPE_ID
 import com.example.recipesapp.databinding.FragmentRecipeBinding
-import com.example.recipesapp.model.Recipe
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
 class RecipeFragment : Fragment() {
