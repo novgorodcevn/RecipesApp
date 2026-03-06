@@ -66,7 +66,6 @@ class RecipeFragment : Fragment() {
         binding.rvMethod.adapter = customAdapterMethod
 
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-            Log.i("!!!", "isFavorite = ${uiState.isFavorite}")
 
             if (uiState.isFavorite) {
                 binding.ibFavorite.setImageResource(R.drawable.ic_heart)
