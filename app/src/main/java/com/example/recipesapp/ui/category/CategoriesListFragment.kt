@@ -13,7 +13,6 @@ import com.example.recipesapp.constants.ARG_CATEGORY_ID
 import com.example.recipesapp.constants.ARG_CATEGORY_IMAGE_URL
 import com.example.recipesapp.constants.ARG_CATEGORY_NAME
 import com.example.recipesapp.databinding.FragmentListCategoriesBinding
-import com.example.recipesapp.data.recipes.STUB
 import kotlin.getValue
 
 class CategoriesListFragment : Fragment() {
