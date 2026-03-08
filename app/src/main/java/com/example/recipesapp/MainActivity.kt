@@ -5,12 +5,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
+import androidx.navigation.findNavController
+import com.example.recipesapp.R.id.nav_host_fragment
 import com.example.recipesapp.databinding.ActivityMainBinding
-import com.example.recipesapp.ui.category.CategoriesListFragment
-import com.example.recipesapp.ui.recipes.favorites.FavoritesFragment
 
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
@@ -28,27 +25,13 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-          if (savedInstanceState == null) {
-              supportFragmentManager.commit {
-                  setReorderingAllowed(true)
-                  add<CategoriesListFragment>(R.id.mainContainer)
-              }
-          }
 
         with(binding) {
             btnCategories.setOnClickListener {
-                supportFragmentManager.commit {
-                    replace<CategoriesListFragment>(R.id.mainContainer)
-                    setReorderingAllowed(true)
-                    addToBackStack(null)
-                }
+                findNavController(nav_host_fragment).navigate(R.id.categoriesListFragment)
             }
             btnFavorites.setOnClickListener {
-                supportFragmentManager.commit {
-                    replace<FavoritesFragment>(R.id.mainContainer)
-                    setReorderingAllowed(true)
-                    addToBackStack(null)
-                }
+                findNavController(nav_host_fragment).navigate(R.id.favoritesFragment)
             }
         }
     }

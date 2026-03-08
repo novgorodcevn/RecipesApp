@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.recipesapp.IngredientsAdapter
 import com.example.recipesapp.R
 import com.example.recipesapp.ui.recipes.recipe.RecipeFragment
@@ -79,10 +80,6 @@ class RecipesListFragment : Fragment() {
         val bundle = bundleOf(
             ARG_RECIPE_ID to recipeId
         )
-        parentFragmentManager.commit {
-            replace<RecipeFragment>(R.id.mainContainer, args = bundle)
-            setReorderingAllowed(true)
-            addToBackStack(null)
-        }
+        findNavController().navigate(R.id.recipeFragment,bundle)
     }
 }
