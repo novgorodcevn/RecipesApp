@@ -37,4 +37,8 @@ class CategoriesListFragmentViewModel(application: Application) : AndroidViewMod
             categoryImage = drawable,
         )
     }
+
+    fun getCategory(categoryId: Int) : Category? {
+        return STUB.getCategories().find { it.id == categoryId }
+    }
 }

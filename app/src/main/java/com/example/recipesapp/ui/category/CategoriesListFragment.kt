@@ -47,7 +47,7 @@ class CategoriesListFragment : Fragment() {
     }
 
     private fun openRecipesByCategoryId(categoryId: Int) {
-        val category = STUB.getCategories().find { it.id == categoryId }
+        val category = viewModel.getCategory(categoryId)
         val categoryName = category?.title
         val categoryImageUrl = category?.imageUrl
         val bundle = bundleOf(
