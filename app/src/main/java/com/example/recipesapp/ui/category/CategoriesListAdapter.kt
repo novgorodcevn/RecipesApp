@@ -9,14 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.recipesapp.model.Category
 import com.example.recipesapp.R
 import com.example.recipesapp.databinding.ItemCategoryBinding
+import com.example.recipesapp.model.Ingredient
 
-class CategoriesListAdapter(private val dataSet: List<Category>) :
+class CategoriesListAdapter(private var dataSet: List<Category>) :
     RecyclerView.Adapter<CategoriesListAdapter.ViewHolder>() {
 
     interface OnItemClickListener {
         fun onItemClick(categoryId: Int)
     }
-
+    fun updateList(dataSetNew: List<Category>) {
+        dataSet = dataSetNew
+        notifyDataSetChanged()
+    }
     var itemClickListener: OnItemClickListener? = null
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
