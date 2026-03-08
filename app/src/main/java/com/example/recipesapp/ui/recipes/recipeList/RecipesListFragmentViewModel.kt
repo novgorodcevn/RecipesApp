@@ -21,10 +21,6 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
     private val mutableUIState = MutableLiveData<RecipesUiState>()
     val uiState: LiveData<RecipesUiState> get() = mutableUIState
 
-    private var argCategoryId: Int? = null
-    private var argCategoryName: String? = null
-    private var argCategoryImageUrl: String? = null
-
     fun loadRecipe(recipeId: Int?, recipeName: String?, recipeImage: String?) {
         // TODO: load from network
         if (recipeId != null) {
@@ -43,9 +39,6 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
                 Log.e("RecipeViewModel", "Ошибка загрузки изображения", e)
                 null
             }
-            argCategoryId = recipeId
-            argCategoryImageUrl = recipeImage
-            argCategoryName = recipeName
             mutableUIState.value = RecipesUiState(
                 recipeImage = drawable,
                 recipesList = STUB.getRecipesByCategoryId(recipeId),
