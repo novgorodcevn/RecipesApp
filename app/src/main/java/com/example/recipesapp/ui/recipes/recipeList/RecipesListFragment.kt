@@ -9,6 +9,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import androidx.fragment.app.viewModels
+import com.example.recipesapp.IngredientsAdapter
 import com.example.recipesapp.R
 import com.example.recipesapp.ui.recipes.recipe.RecipeFragment
 import com.example.recipesapp.constants.ARG_CATEGORY_ID
@@ -17,6 +19,8 @@ import com.example.recipesapp.constants.ARG_CATEGORY_NAME
 import com.example.recipesapp.constants.ARG_RECIPE_ID
 import com.example.recipesapp.data.recipes.STUB
 import com.example.recipesapp.databinding.FragmentListRecipesBinding
+import com.example.recipesapp.ui.recipes.recipe.RecipeFragmentViewModel
+import kotlin.getValue
 
 class RecipesListFragment : Fragment() {
     private var _binding: FragmentListRecipesBinding? = null
@@ -24,6 +28,10 @@ class RecipesListFragment : Fragment() {
     private var argCategoryId: Int? = null
     private var argCategoryName: String? = null
     private var argCategoryImageUrl: String? = null
+
+    private val viewModel: RecipesListFragmentViewModel by viewModels()
+
+    private lateinit var customAdapter: RecipesListAdapter
 
     private val binding
         get() = _binding
@@ -43,13 +51,8 @@ class RecipesListFragment : Fragment() {
         argCategoryId = requireArguments().getInt(ARG_CATEGORY_ID)
         argCategoryName = requireArguments().getString(ARG_CATEGORY_NAME)
         argCategoryImageUrl = requireArguments().getString(ARG_CATEGORY_IMAGE_URL)
-
-        binding.tvHeadingRecipes.text = argCategoryName
-        val image = argCategoryImageUrl?.let { context?.assets?.open(it) }.use { inputStream ->
-            Drawable.createFromStream(inputStream, null)
-        }
-        binding.ivRecipes.setImageDrawable(image)
-        initRecycler()
+        viewModel.loadRecipe(argCategoryId,argCategoryName,argCategoryImageUrl)
+        initUI()
     }
 
     override fun onDestroyView() {
@@ -57,14 +60,19 @@ class RecipesListFragment : Fragment() {
         _binding = null
     }
 
-    private fun initRecycler() {
-        val customAdapter = RecipesListAdapter(STUB.getRecipesByCategoryId(argCategoryId))
+    private fun initUI() {
+        customAdapter = RecipesListAdapter(emptyList())
         binding.rvRecipes.adapter = customAdapter
         customAdapter.setOnItemClickListener(object : RecipesListAdapter.OnItemClickListener {
             override fun onItemClick(recipeId: Int) {
                 openRecipeByRecipeId(recipeId)
             }
         })
+        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+            binding.tvHeadingRecipes.text = uiState.tvHeading
+            binding.ivRecipes.setImageDrawable(uiState.recipeImage)
+            customAdapter.updateList(uiState.recipesList ?: emptyList())
+        }
     }
 
     private fun openRecipeByRecipeId(recipeId: Int) {
@@ -72,7 +80,7 @@ class RecipesListFragment : Fragment() {
             ARG_RECIPE_ID to recipeId
         )
         parentFragmentManager.commit {
-            replace<RecipeFragment>(R.id.mainContainer,args = bundle)
+            replace<RecipeFragment>(R.id.mainContainer, args = bundle)
             setReorderingAllowed(true)
             addToBackStack(null)
         }

@@ -9,6 +9,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import androidx.fragment.app.viewModels
+import com.example.recipesapp.IngredientsAdapter
 import com.example.recipesapp.R
 import com.example.recipesapp.ui.recipes.recipeList.RecipesListFragment
 import com.example.recipesapp.constants.ARG_CATEGORY_ID
@@ -16,9 +18,14 @@ import com.example.recipesapp.constants.ARG_CATEGORY_IMAGE_URL
 import com.example.recipesapp.constants.ARG_CATEGORY_NAME
 import com.example.recipesapp.databinding.FragmentListCategoriesBinding
 import com.example.recipesapp.data.recipes.STUB
+import kotlin.getValue
 
 class CategoriesListFragment : Fragment() {
     private var _binding: FragmentListCategoriesBinding? = null
+
+    private val viewModel: CategoriesListFragmentViewModel by viewModels()
+
+    private lateinit var customAdapter: CategoriesListAdapter
 
     private val binding
         get() = _binding
@@ -34,8 +41,8 @@ class CategoriesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.loadCategories()
         initUI()
-        initRecycler()
     }
 
     override fun onDestroyView() {
@@ -43,18 +50,8 @@ class CategoriesListFragment : Fragment() {
         _binding = null
     }
 
-    private fun initRecycler() {
-        val customAdapter = CategoriesListAdapter(STUB.getCategories())
-        binding.rvCategories.adapter = customAdapter
-        customAdapter.setOnItemClickListener(object : CategoriesListAdapter.OnItemClickListener {
-            override fun onItemClick(categoryId: Int) {
-                openRecipesByCategoryId(categoryId)
-            }
-        })
-    }
-
     private fun openRecipesByCategoryId(categoryId: Int) {
-        val category = STUB.getCategories().find { it.id == categoryId }
+        val category = viewModel.getCategory(categoryId)
         val categoryName = category?.title
         val categoryImageUrl = category?.imageUrl
         val bundle = bundleOf(
@@ -70,9 +67,16 @@ class CategoriesListFragment : Fragment() {
     }
 
     private fun initUI() {
-        val image = "bcg_categories.png".let { context?.assets?.open(it) }.use { inputStream ->
-            Drawable.createFromStream(inputStream, null)
+        customAdapter = CategoriesListAdapter(emptyList())
+        binding.rvCategories.adapter = customAdapter
+        customAdapter.setOnItemClickListener(object : CategoriesListAdapter.OnItemClickListener {
+            override fun onItemClick(categoryId: Int) {
+                openRecipesByCategoryId(categoryId)
+            }
+        })
+        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+            binding.ivCategories.setImageDrawable(uiState.categoryImage)
+            customAdapter.updateList(uiState.category?: emptyList())
         }
-        binding.ivCategories.setImageDrawable(image)
     }
 }
