@@ -1,23 +1,18 @@
 package com.example.recipesapp.ui.category
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
-import com.example.recipesapp.IngredientsAdapter
+import androidx.navigation.fragment.findNavController
 import com.example.recipesapp.R
-import com.example.recipesapp.ui.recipes.recipeList.RecipesListFragment
 import com.example.recipesapp.constants.ARG_CATEGORY_ID
 import com.example.recipesapp.constants.ARG_CATEGORY_IMAGE_URL
 import com.example.recipesapp.constants.ARG_CATEGORY_NAME
 import com.example.recipesapp.databinding.FragmentListCategoriesBinding
-import com.example.recipesapp.data.recipes.STUB
 import kotlin.getValue
 
 class CategoriesListFragment : Fragment() {
@@ -59,11 +54,8 @@ class CategoriesListFragment : Fragment() {
             ARG_CATEGORY_NAME to categoryName,
             ARG_CATEGORY_IMAGE_URL to categoryImageUrl
         )
-        parentFragmentManager.commit {
-            replace<RecipesListFragment>(R.id.mainContainer, args = bundle)
-            setReorderingAllowed(true)
-            addToBackStack(null)
-        }
+        findNavController().navigate(R.id.recipesListFragment,bundle)
+
     }
 
     private fun initUI() {
