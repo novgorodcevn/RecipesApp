@@ -37,7 +37,7 @@ class RecipeFragment : Fragment() {
     private val viewModel: RecipeFragmentViewModel by viewModels()
     private var _binding: FragmentRecipeBinding? = null
 
-    val args: RecipeFragmentArgs by navArgs()
+    private val args: RecipeFragmentArgs by navArgs()
 
     private lateinit var customAdapterIngredients: IngredientsAdapter
     private lateinit var customAdapterMethod: MethodAdapter
