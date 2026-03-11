@@ -1,18 +1,15 @@
 package com.example.recipesapp.ui.category
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.recipesapp.R
-import com.example.recipesapp.constants.ARG_CATEGORY_ID
-import com.example.recipesapp.constants.ARG_CATEGORY_IMAGE_URL
-import com.example.recipesapp.constants.ARG_CATEGORY_NAME
 import com.example.recipesapp.databinding.FragmentListCategoriesBinding
+import com.example.recipesapp.model.Category
 import kotlin.getValue
 
 class CategoriesListFragment : Fragment() {
@@ -46,16 +43,13 @@ class CategoriesListFragment : Fragment() {
     }
 
     private fun openRecipesByCategoryId(categoryId: Int) {
-        val category = viewModel.getCategory(categoryId)
-        val categoryName = category?.title
-        val categoryImageUrl = category?.imageUrl
-        val bundle = bundleOf(
-            ARG_CATEGORY_ID to categoryId,
-            ARG_CATEGORY_NAME to categoryName,
-            ARG_CATEGORY_IMAGE_URL to categoryImageUrl
-        )
-        findNavController().navigate(R.id.recipesListFragment,bundle)
-
+        val category: Category? = try {
+            viewModel.getCategory(categoryId)
+        }catch (e:IllegalArgumentException ) {
+            Log.e("CategoriesListFragment", "Ошибка загрузки категории", e)
+            null
+        }
+        category?.let { findNavController().navigate(CategoriesListFragmentDirections.actionCategoriesListFragmentToRecipesListFragment(it)) }
     }
 
     private fun initUI() {
