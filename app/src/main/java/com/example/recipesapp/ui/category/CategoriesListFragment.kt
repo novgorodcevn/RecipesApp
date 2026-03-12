@@ -1,7 +1,6 @@
 package com.example.recipesapp.ui.category
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.recipesapp.databinding.FragmentListCategoriesBinding
-import com.example.recipesapp.model.Category
 import kotlin.getValue
 
 class CategoriesListFragment : Fragment() {
@@ -43,13 +41,14 @@ class CategoriesListFragment : Fragment() {
     }
 
     private fun openRecipesByCategoryId(categoryId: Int) {
-        val category: Category? = try {
-            viewModel.getCategory(categoryId)
-        }catch (e:IllegalArgumentException ) {
-            Log.e("CategoriesListFragment", "Ошибка загрузки категории", e)
-            null
+        val category = viewModel.getCategory(categoryId) ?: throw IllegalArgumentException()
+        category.let {
+            findNavController().navigate(
+                CategoriesListFragmentDirections.actionCategoriesListFragmentToRecipesListFragment(
+                    it
+                )
+            )
         }
-        category?.let { findNavController().navigate(CategoriesListFragmentDirections.actionCategoriesListFragmentToRecipesListFragment(it)) }
     }
 
     private fun initUI() {
@@ -62,7 +61,7 @@ class CategoriesListFragment : Fragment() {
         })
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
             binding.ivCategories.setImageDrawable(uiState.categoryImage)
-            customAdapter.updateList(uiState.category?: emptyList())
+            customAdapter.updateList(uiState.category ?: emptyList())
         }
     }
 }
