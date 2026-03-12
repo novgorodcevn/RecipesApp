@@ -8,22 +8,22 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.recipesapp.R
 import com.example.recipesapp.constants.ARG_CATEGORY_ID
 import com.example.recipesapp.constants.ARG_CATEGORY_IMAGE_URL
 import com.example.recipesapp.constants.ARG_CATEGORY_NAME
 import com.example.recipesapp.constants.ARG_RECIPE_ID
 import com.example.recipesapp.databinding.FragmentListRecipesBinding
+import com.example.recipesapp.ui.recipes.recipe.RecipeFragmentArgs
 import kotlin.getValue
 
 class RecipesListFragment : Fragment() {
     private var _binding: FragmentListRecipesBinding? = null
 
-    private var argCategoryId: Int? = null
-    private var argCategoryName: String? = null
-    private var argCategoryImageUrl: String? = null
-
     private val viewModel: RecipesListFragmentViewModel by viewModels()
+
+    private val args: RecipesListFragmentArgs by navArgs()
 
     private lateinit var customAdapter: RecipesListAdapter
 
@@ -41,11 +41,7 @@ class RecipesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        argCategoryId = requireArguments().getInt(ARG_CATEGORY_ID)
-        argCategoryName = requireArguments().getString(ARG_CATEGORY_NAME)
-        argCategoryImageUrl = requireArguments().getString(ARG_CATEGORY_IMAGE_URL)
-        viewModel.loadRecipe(argCategoryId,argCategoryName,argCategoryImageUrl)
+        viewModel.loadRecipe(args.category.id, args.category.title, args.category.imageUrl)
         initUI()
     }
 
@@ -68,7 +64,12 @@ class RecipesListFragment : Fragment() {
             customAdapter.updateList(uiState.recipesList ?: emptyList())
         }
     }
+
     private fun openRecipeByRecipeId(recipeId: Int) {
-        findNavController().navigate(RecipesListFragmentDirections.actionRecipesListFragmentToRecipeFragment(recipeId))
+        findNavController().navigate(
+            RecipesListFragmentDirections.actionRecipesListFragmentToRecipeFragment(
+                recipeId
+            )
+        )
     }
 }
