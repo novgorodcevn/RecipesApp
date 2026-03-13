@@ -1,6 +1,7 @@
 package com.example.recipesapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -8,6 +9,11 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.findNavController
 import com.example.recipesapp.R.id.nav_host_fragment
 import com.example.recipesapp.databinding.ActivityMainBinding
+import com.example.recipesapp.model.Category
+import kotlinx.serialization.json.Json
+import java.net.HttpURLConnection
+import java.net.URL
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
@@ -25,6 +31,26 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val json = Json {
+            ignoreUnknownKeys = true
+        }
+
+        Log.i("!!!", "Метод onCreate() выполняется на потоке:${thread {}} ")
+
+        val thread = Thread {
+            val url = URL("https://recipes.androidsprint.ru/api/category")
+            val connection = url.openConnection() as HttpURLConnection
+            connection.connect()
+            Log.i("!!!", "Выполняю запрос на потоке:${thread {}} ")
+            Log.i("!!!", "Body: ${connection.inputStream.bufferedReader().readText()}")
+            val categories = json.decodeFromString<List<Category>>(
+                connection.inputStream.bufferedReader().readText()
+            )
+            categories.forEach {
+                Log.i("!!!", "Категория: ${it.id} ${it.title} ${it.description} ${it.imageUrl}")
+            }
+        }
+        thread.start()
 
         with(binding) {
             btnCategories.setOnClickListener {
