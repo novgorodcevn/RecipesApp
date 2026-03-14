@@ -35,20 +35,21 @@ class MainActivity : AppCompatActivity() {
             ignoreUnknownKeys = true
         }
 
-        Log.i("!!!", "Метод onCreate() выполняется на потоке:${thread {}} ")
+        Log.i("!!!", "Метод onCreate() выполняется на потоке:${Thread.currentThread().name} ")
 
         val thread = Thread {
             val url = URL("https://recipes.androidsprint.ru/api/category")
             val connection = url.openConnection() as HttpURLConnection
             connection.connect()
-            Log.i("!!!", "Выполняю запрос на потоке:${thread {}} ")
-            Log.i("!!!", "Body: ${connection.inputStream.bufferedReader().readText()}")
+            Log.i("!!!", "Выполняю запрос на потоке:${Thread.currentThread().name} ")
+            val data = connection.inputStream.bufferedReader().readText()
             val categories = json.decodeFromString<List<Category>>(
-                connection.inputStream.bufferedReader().readText()
+                data
             )
             categories.forEach {
                 Log.i("!!!", "Категория: ${it.id} ${it.title} ${it.description} ${it.imageUrl}")
             }
+            connection.disconnect()
         }
         thread.start()
 
