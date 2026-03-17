@@ -13,6 +13,8 @@ import com.example.recipesapp.model.Category
 import kotlinx.serialization.json.Json
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
@@ -37,7 +39,8 @@ class MainActivity : AppCompatActivity() {
 
         Log.i("!!!", "Метод onCreate() выполняется на потоке:${Thread.currentThread().name} ")
 
-        val thread = Thread {
+        val threadPool = Executors.newFixedThreadPool(10)
+        threadPool.execute {
             val url = URL("https://recipes.androidsprint.ru/api/category")
             val connection = url.openConnection() as HttpURLConnection
             connection.connect()
@@ -49,9 +52,10 @@ class MainActivity : AppCompatActivity() {
             categories.forEach {
                 Log.i("!!!", "Категория: ${it.id} ${it.title} ${it.description} ${it.imageUrl}")
             }
-            connection.disconnect()
+            val categoriesId: List<Int> = categories.map { it.id }
+            Log.i("!!!", "categoriesId: $categoriesId")
+            threadPool.shutdown()
         }
-        thread.start()
 
         with(binding) {
             btnCategories.setOnClickListener {
