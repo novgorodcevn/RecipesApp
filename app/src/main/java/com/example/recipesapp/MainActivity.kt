@@ -10,12 +10,12 @@ import androidx.navigation.findNavController
 import com.example.recipesapp.R.id.nav_host_fragment
 import com.example.recipesapp.databinding.ActivityMainBinding
 import com.example.recipesapp.model.Category
+import com.example.recipesapp.model.Recipe
 import kotlinx.serialization.json.Json
-import java.net.HttpURLConnection
-import java.net.URL
-import java.util.concurrent.Executor
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.util.concurrent.Executors
-import kotlin.concurrent.thread
+
 
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
         get() = _binding
             ?: throw IllegalStateException("Binding for ActivityMainBinding must not be null")
 
+   private val threadPool = Executors.newFixedThreadPool(10)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
@@ -37,24 +38,43 @@ class MainActivity : AppCompatActivity() {
             ignoreUnknownKeys = true
         }
 
+
         Log.i("!!!", "Метод onCreate() выполняется на потоке:${Thread.currentThread().name} ")
 
-        val threadPool = Executors.newFixedThreadPool(10)
         threadPool.execute {
-            val url = URL("https://recipes.androidsprint.ru/api/category")
-            val connection = url.openConnection() as HttpURLConnection
-            connection.connect()
+            val client: OkHttpClient = OkHttpClient()
+            val request: Request = Request.Builder()
+                .url("https://recipes.androidsprint.ru/api/category")
+                .build()
             Log.i("!!!", "Выполняю запрос на потоке:${Thread.currentThread().name} ")
-            val data = connection.inputStream.bufferedReader().readText()
-            val categories = json.decodeFromString<List<Category>>(
-                data
-            )
-            categories.forEach {
-                Log.i("!!!", "Категория: ${it.id} ${it.title} ${it.description} ${it.imageUrl}")
+
+            client.newCall(request).execute().use { response ->
+                val data = response.body.string()
+                val categories = json.decodeFromString<List<Category>>(
+                    data
+                )
+                categories.forEach {
+                    Log.i("!!!", "Категория: ${it.id} ${it.title} ${it.description} ${it.imageUrl}")
+                }
+                val categoriesId: List<Int> = categories.map { it.id }
+                Log.i("!!!", "categoriesId: $categoriesId")
+                categoriesId.forEach { id ->
+                    threadPool.execute {
+                        val request: Request = Request.Builder()
+                            .url("https://recipes.androidsprint.ru/api/category/$id/recipes")
+                            .build()
+                        client.newCall(request).execute().use { response ->
+                            val data = response.body.string()
+                            val recipes = json.decodeFromString<List<Recipe>>(
+                                data
+                            )
+                               recipes.forEach {
+                                   Log.i("!!!", "Рецепт: ${it.title}")
+                               }
+                        }
+                    }
+                }
             }
-            val categoriesId: List<Int> = categories.map { it.id }
-            Log.i("!!!", "categoriesId: $categoriesId")
-            threadPool.shutdown()
         }
 
         with(binding) {
@@ -65,5 +85,10 @@ class MainActivity : AppCompatActivity() {
                 findNavController(nav_host_fragment).navigate(R.id.favoritesFragment)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        threadPool.shutdown()
     }
 }
