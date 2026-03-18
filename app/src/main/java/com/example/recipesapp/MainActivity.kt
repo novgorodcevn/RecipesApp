@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         get() = _binding
             ?: throw IllegalStateException("Binding for ActivityMainBinding must not be null")
 
-   private val threadPool = Executors.newFixedThreadPool(10)
+    private val threadPool = Executors.newFixedThreadPool(10)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
@@ -54,29 +54,32 @@ class MainActivity : AppCompatActivity() {
                     data
                 )
                 categories.forEach {
-                    Log.i("!!!", "Категория: ${it.id} ${it.title} ${it.description} ${it.imageUrl}")
+                    Log.i("!!!", "Категори: ${it.id} ${it.title} ${it.description} ${it.imageUrl}")
                 }
                 val categoriesId: List<Int> = categories.map { it.id }
-                Log.i("!!!", "categoriesId: $categoriesId")
-                categoriesId.forEach { id ->
-                    threadPool.execute {
-                        val request: Request = Request.Builder()
-                            .url("https://recipes.androidsprint.ru/api/category/$id/recipes")
-                            .build()
-                        client.newCall(request).execute().use { response ->
-                            val data = response.body.string()
-                            val recipes = json.decodeFromString<List<Recipe>>(
-                                data
-                            )
-                               recipes.forEach {
-                                   Log.i("!!!", "Рецепт: ${it.title}")
-                               }
-                        }
-                    }
-                }
+                //       Log.i("!!!", "categories: $categoriesId")
+                //        categoriesId.forEach { id ->
+                //           threadPool.execute {
+                //               val request: Request = Request.Builder()
+                //                    .url("https://recipes.androidsprint.ru/api/category/$id/recipes")
+                //                    .build()
+                //              try {
+                //                   client.newCall(request).execute().use { response ->
+                //      val data = response.body.string()
+                //                      val recipes = json.decodeFromString<List<Recipe>>(
+                //                           data
+                //                       )
+                //                      recipes.forEach {
+                //                           Log.i("!!!", "Рецепт: ${it.title}")
+                //                        }
+                //                    }
+                //                } catch (e: Exception) {
+                //                   Log.e("!!!", "Ошибка при парсинге рецептов ID $id: ${e.message}", e)
+                //               }
+                //           }
+                //       }
             }
         }
-
         with(binding) {
             btnCategories.setOnClickListener {
                 findNavController(nav_host_fragment).navigate(R.id.categoriesListFragment)
@@ -85,10 +88,12 @@ class MainActivity : AppCompatActivity() {
                 findNavController(nav_host_fragment).navigate(R.id.favoritesFragment)
             }
         }
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
         threadPool.shutdown()
     }
+
 }
