@@ -16,14 +16,14 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.Executors
 
-
+private val threadPool = Executors.newFixedThreadPool(10)
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding
         get() = _binding
             ?: throw IllegalStateException("Binding for ActivityMainBinding must not be null")
 
-    private val threadPool = Executors.newFixedThreadPool(10)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
@@ -57,27 +57,27 @@ class MainActivity : AppCompatActivity() {
                     Log.i("!!!", "Категори: ${it.id} ${it.title} ${it.description} ${it.imageUrl}")
                 }
                 val categoriesId: List<Int> = categories.map { it.id }
-                //       Log.i("!!!", "categories: $categoriesId")
-                //        categoriesId.forEach { id ->
-                //           threadPool.execute {
-                //               val request: Request = Request.Builder()
-                //                    .url("https://recipes.androidsprint.ru/api/category/$id/recipes")
-                //                    .build()
-                //              try {
-                //                   client.newCall(request).execute().use { response ->
-                //      val data = response.body.string()
-                //                      val recipes = json.decodeFromString<List<Recipe>>(
-                //                           data
-                //                       )
-                //                      recipes.forEach {
-                //                           Log.i("!!!", "Рецепт: ${it.title}")
-                //                        }
-                //                    }
-                //                } catch (e: Exception) {
-                //                   Log.e("!!!", "Ошибка при парсинге рецептов ID $id: ${e.message}", e)
-                //               }
-                //           }
-                //       }
+                       Log.i("!!!", "categories: $categoriesId")
+                        categoriesId.forEach { id ->
+                          threadPool.execute {
+                              val request: Request = Request.Builder()
+                                   .url("https://recipes.androidsprint.ru/api/category/$id/recipes")
+                                    .build()
+                             try {
+                                   client.newCall(request).execute().use { response ->
+                      val data = response.body.string()
+                                     val recipes = json.decodeFromString<List<Recipe>>(
+                                          data
+                                       )
+                                     recipes.forEach {
+                                           Log.i("!!!", "Рецепт: ${it.title}")
+                                        }
+                                    }
+                              } catch (e: Exception) {
+                                Log.e("!!!", "Ошибка при парсинге рецептов ID $id: ${e.message}", e)
+                               }
+                           }
+                       }
             }
         }
         with(binding) {
