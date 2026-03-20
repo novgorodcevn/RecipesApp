@@ -16,7 +16,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.Executors
 
-
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding
@@ -49,32 +48,38 @@ class MainActivity : AppCompatActivity() {
             Log.i("!!!", "Выполняю запрос на потоке:${Thread.currentThread().name} ")
 
             client.newCall(request).execute().use { response ->
-                val data = response.body.string()
-                val categories = json.decodeFromString<List<Category>>(
-                    data
-                )
-                categories.forEach {
+                val data = response.body?.string()
+                val categories = data?.let {
+                    json.decodeFromString<List<Category>>(
+                        it
+                    )
+                }
+                categories?.forEach {
                     Log.i("!!!", "Категори: ${it.id} ${it.title} ${it.description} ${it.imageUrl}")
                 }
-                val categoriesId: List<Int> = categories.map { it.id }
-                Log.i("!!!", "categories: $categoriesId")
-                categoriesId.forEach { id ->
-                    threadPool.execute {
-                        val request: Request = Request.Builder()
-                            .url("https://recipes.androidsprint.ru/api/category/$id/recipes")
-                            .build()
-                        try {
-                            client.newCall(request).execute().use { response ->
-                                val data = response.body.string()
-                                val recipes = json.decodeFromString<List<Recipe>>(
-                                    data
-                                )
-                                recipes.forEach {
-                                    Log.i("!!!", "Рецепт: ${it.title}")
+                if (categories != null) {
+                    val categoriesId: List<Int> = categories.map { it.id }
+                    Log.i("!!!", "categories: $categoriesId")
+                    categoriesId.forEach { id ->
+                        threadPool.execute {
+                            val request: Request = Request.Builder()
+                                .url("https://recipes.androidsprint.ru/api/category/$id/recipes")
+                                .build()
+                            try {
+                                client.newCall(request).execute().use { response ->
+                                    val data = response.body?.string()
+                                    val recipes = data?.let {
+                                        json.decodeFromString<List<Recipe>>(
+                                            it
+                                        )
+                                    }
+                                    recipes?.forEach {
+                                        Log.i("!!!", "Рецепт: ${it.title}")
+                                    }
                                 }
+                            } catch (e: Exception) {
+                                Log.e("!!!", "Ошибка при парсинге рецептов ID $id: ${e.message}", e)
                             }
-                        } catch (e: Exception) {
-                            Log.e("!!!", "Ошибка при парсинге рецептов ID $id: ${e.message}", e)
                         }
                     }
                 }
@@ -88,12 +93,10 @@ class MainActivity : AppCompatActivity() {
                 findNavController(nav_host_fragment).navigate(R.id.favoritesFragment)
             }
         }
-
     }
 
     override fun onDestroy() {
         super.onDestroy()
         threadPool.shutdown()
     }
-
 }
