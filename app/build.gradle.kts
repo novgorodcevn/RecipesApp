@@ -57,4 +57,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.androidx.fragment.ktx)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
+
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
 }
