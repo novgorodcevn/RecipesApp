@@ -14,6 +14,7 @@ import com.example.recipesapp.model.Recipe
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
@@ -37,11 +38,16 @@ class MainActivity : AppCompatActivity() {
             ignoreUnknownKeys = true
         }
 
-
         Log.i("!!!", "Метод onCreate() выполняется на потоке:${Thread.currentThread().name} ")
 
         threadPool.execute {
-            val client: OkHttpClient = OkHttpClient()
+            val logging = HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+            val client: OkHttpClient = OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .build()
+
             val request: Request = Request.Builder()
                 .url("https://recipes.androidsprint.ru/api/category")
                 .build()
