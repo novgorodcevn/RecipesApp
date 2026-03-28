@@ -10,7 +10,6 @@ import androidx.lifecycle.MutableLiveData
 import com.example.recipesapp.constants.KEY_FAVORITES_ID
 import com.example.recipesapp.constants.SAVE_FAVORITES_ID
 import com.example.recipesapp.data.recipes.RecipesRepository
-import com.example.recipesapp.data.recipes.STUB
 import com.example.recipesapp.model.Recipe
 import java.util.concurrent.Executors
 
@@ -34,8 +33,6 @@ class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(ap
             val recipeById =
                 recipesRepository.getRecipesByIds(getFavorites().mapNotNull { it.toIntOrNull() }
                     .toSet())
-            //   val favoritesIdList =
-            //        STUB.getRecipesByIds(getFavorites().mapNotNull { it.toIntOrNull() }.toSet())
             val drawable = try {
                 "bcg_favorites.png".let {
                     getApplication<Application>().assets?.open(

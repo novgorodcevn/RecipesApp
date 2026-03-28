@@ -11,7 +11,6 @@ import androidx.lifecycle.MutableLiveData
 import com.example.recipesapp.constants.KEY_FAVORITES_ID
 import com.example.recipesapp.constants.SAVE_FAVORITES_ID
 import com.example.recipesapp.data.recipes.RecipesRepository
-import com.example.recipesapp.data.recipes.STUB
 import com.example.recipesapp.model.Ingredient
 import com.example.recipesapp.model.Recipe
 import java.util.concurrent.Executors
@@ -41,10 +40,11 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
 
     fun loadRecipe(recipeId: Int?) {
         executor.submit {
+            val recipeById = recipesRepository.getRecipeById(recipeId)
             // TODO: load from network
             if (recipeId != null) {
                 val drawable = try {
-                    STUB.getRecipeById(recipeId)?.imageUrl?.let {
+                    recipeById?.imageUrl?.let {
                         getApplication<Application>().assets?.open(
                             it
                         )
@@ -56,7 +56,7 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
                     Log.e("RecipeViewModel", "Ошибка загрузки изображения", e)
                     null
                 }
-                val recipeById = recipesRepository.getRecipeById(recipeId)
+
                 currentRecipeId = recipeId
                 mutableUIState.postValue(
                         RecipeUiState(

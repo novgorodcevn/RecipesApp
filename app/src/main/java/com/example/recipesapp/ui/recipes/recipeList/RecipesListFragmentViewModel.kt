@@ -7,7 +7,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.recipesapp.data.recipes.RecipesRepository
-import com.example.recipesapp.data.recipes.STUB
 import com.example.recipesapp.model.Recipe
 import com.example.recipesapp.ui.recipes.recipe.RecipeFragmentViewModel.RecipeUiState
 import java.util.concurrent.Executors
