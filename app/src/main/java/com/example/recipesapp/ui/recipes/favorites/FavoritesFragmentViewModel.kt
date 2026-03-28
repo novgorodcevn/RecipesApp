@@ -31,9 +31,11 @@ class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(ap
 
     fun loadFavorites() {
         executor.submit {
-            val recipeById = recipesRepository.getRecipesByIds(getFavorites().mapNotNull { it.toIntOrNull() }.toSet())
-         //   val favoritesIdList =
-        //        STUB.getRecipesByIds(getFavorites().mapNotNull { it.toIntOrNull() }.toSet())
+            val recipeById =
+                recipesRepository.getRecipesByIds(getFavorites().mapNotNull { it.toIntOrNull() }
+                    .toSet())
+            //   val favoritesIdList =
+            //        STUB.getRecipesByIds(getFavorites().mapNotNull { it.toIntOrNull() }.toSet())
             val drawable = try {
                 "bcg_favorites.png".let {
                     getApplication<Application>().assets?.open(
@@ -49,7 +51,7 @@ class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(ap
             }
             mutableUIState.postValue(
                 FavoritesUiState(
-
+                    favoritesList = recipeById,
                     favoritesImage = drawable
                 )
             )
