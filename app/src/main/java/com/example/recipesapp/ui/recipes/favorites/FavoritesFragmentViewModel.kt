@@ -9,8 +9,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.recipesapp.constants.KEY_FAVORITES_ID
 import com.example.recipesapp.constants.SAVE_FAVORITES_ID
+import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.data.recipes.STUB
 import com.example.recipesapp.model.Recipe
+import java.util.concurrent.Executors
 
 class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -24,27 +26,34 @@ class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(ap
 
     private val sharedPref =
         application.getSharedPreferences(SAVE_FAVORITES_ID, Context.MODE_PRIVATE)
+    private val executor = Executors.newCachedThreadPool()
+    private val recipesRepository = RecipesRepository()
 
     fun loadFavorites() {
-        val favoritesIdList =
-            STUB.getRecipesByIds(getFavorites().mapNotNull { it.toIntOrNull() }.toSet())
-        val drawable = try {
-            "bcg_favorites.png".let {
-                getApplication<Application>().assets?.open(
-                    it
-                )
-            }
-                .use { inputStream ->
-                    Drawable.createFromStream(inputStream, null)
+        executor.submit {
+            val recipeById = recipesRepository.getRecipesByIds(getFavorites().mapNotNull { it.toIntOrNull() }.toSet())
+         //   val favoritesIdList =
+        //        STUB.getRecipesByIds(getFavorites().mapNotNull { it.toIntOrNull() }.toSet())
+            val drawable = try {
+                "bcg_favorites.png".let {
+                    getApplication<Application>().assets?.open(
+                        it
+                    )
                 }
-        } catch (e: Exception) {
-            Log.e("CategoriesViewModel", "Ошибка загрузки изображения", e)
-            null
+                    .use { inputStream ->
+                        Drawable.createFromStream(inputStream, null)
+                    }
+            } catch (e: Exception) {
+                Log.e("CategoriesViewModel", "Ошибка загрузки изображения", e)
+                null
+            }
+            mutableUIState.postValue(
+                FavoritesUiState(
+
+                    favoritesImage = drawable
+                )
+            )
         }
-        mutableUIState.value = FavoritesUiState(
-            favoritesList = favoritesIdList,
-            favoritesImage = drawable
-        )
     }
 
     private fun getFavorites(): MutableSet<String> {

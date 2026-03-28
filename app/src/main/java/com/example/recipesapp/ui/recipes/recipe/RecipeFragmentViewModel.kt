@@ -10,9 +10,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.recipesapp.constants.KEY_FAVORITES_ID
 import com.example.recipesapp.constants.SAVE_FAVORITES_ID
+import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.data.recipes.STUB
 import com.example.recipesapp.model.Ingredient
 import com.example.recipesapp.model.Recipe
+import java.util.concurrent.Executors
 
 class RecipeFragmentViewModel(application: Application) : AndroidViewModel(application) {
     data class RecipeUiState(
@@ -23,42 +25,53 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
         val tvHeading: String? = null,
         val ingredientsList: List<Ingredient>? = null,
         val methodList: List<String>? = null,
+        val isError: Boolean = true,
     )
 
     private val sharedPref =
         application.getSharedPreferences(SAVE_FAVORITES_ID, Context.MODE_PRIVATE)
     private val favorites = getFavorites()
     private val mutableUIState = MutableLiveData<RecipeUiState>()
+
+    private val recipesRepository = RecipesRepository()
+    private val executor = Executors.newCachedThreadPool()
     val uiState: LiveData<RecipeUiState> get() = mutableUIState
 
     private var currentRecipeId: Int? = null
 
     fun loadRecipe(recipeId: Int?) {
-        // TODO: load from network
-        if (recipeId != null) {
-            val drawable = try {
-                STUB.getRecipeById(recipeId)?.imageUrl?.let {
-                    getApplication<Application>().assets?.open(
-                        it
-                    )
-                }
-                    .use { inputStream ->
-                        Drawable.createFromStream(inputStream, null)
+        executor.submit {
+            // TODO: load from network
+            if (recipeId != null) {
+                val drawable = try {
+                    STUB.getRecipeById(recipeId)?.imageUrl?.let {
+                        getApplication<Application>().assets?.open(
+                            it
+                        )
                     }
-            } catch (e: Exception) {
-                Log.e("RecipeViewModel", "Ошибка загрузки изображения", e)
-                null
+                        .use { inputStream ->
+                            Drawable.createFromStream(inputStream, null)
+                        }
+                } catch (e: Exception) {
+                    Log.e("RecipeViewModel", "Ошибка загрузки изображения", e)
+                    null
+                }
+                val recipeById = recipesRepository.getRecipeById(recipeId)
+                currentRecipeId = recipeId
+                mutableUIState.postValue(
+                        RecipeUiState(
+                            recipe = recipeById,
+                            isFavorite = favorites.contains(recipeId.toString()),
+                            portions = mutableUIState.value?.portions ?: 1,
+                            recipeImage = drawable,
+                            ingredientsList = recipeById?.ingredients ?: emptyList(),
+                            methodList = recipeById?.method ?: emptyList(),
+                            tvHeading = recipeById?.title,
+                            isError = recipeById == null
+                        )
+                    )
+
             }
-            currentRecipeId = recipeId
-            mutableUIState.value = RecipeUiState(
-                recipe = STUB.getRecipeById(recipeId),
-                isFavorite = favorites.contains(recipeId.toString()),
-                portions = mutableUIState.value?.portions ?: 1,
-                recipeImage = drawable,
-                ingredientsList = STUB.getRecipeById(recipeId)?.ingredients ?: emptyList(),
-                methodList = STUB.getRecipeById(recipeId)?.method ?: emptyList(),
-                tvHeading = STUB.getRecipeById(recipeId)?.title
-            )
         }
     }
 

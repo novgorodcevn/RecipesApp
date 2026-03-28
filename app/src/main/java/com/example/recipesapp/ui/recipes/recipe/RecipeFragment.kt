@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -87,6 +88,9 @@ class RecipeFragment : Fragment() {
             customAdapterIngredients.updateList(uiState.ingredientsList ?: emptyList())
             customAdapterMethod.updateList(uiState.methodList ?: emptyList())
             customAdapterIngredients.updateIngredients(uiState.portions)
+            if (uiState.isError) {
+                Toast.makeText(context, "Ошибка получения данных", Toast.LENGTH_SHORT).show()
+            }
         }
         binding.sbRecipe.setOnSeekBarChangeListener(PortionSeekBarListener { progress ->
             viewModel.updatingPortions(
