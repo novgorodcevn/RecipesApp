@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.recipesapp.data.recipes.RecipesRepository
+import com.example.recipesapp.data.recipes.STUB
 import com.example.recipesapp.model.Category
 import retrofit2.Response
 import java.util.concurrent.Executors
@@ -47,9 +48,10 @@ class CategoriesListFragmentViewModel(application: Application) : AndroidViewMod
                 )
             )
         }
+
     }
 
     fun getCategory(categoryId: Int): Category? {
-        return recipesRepository.getCategories()?.find { it.id == categoryId }
+        return  STUB.getCategories().find { it.id == categoryId }
     }
 }

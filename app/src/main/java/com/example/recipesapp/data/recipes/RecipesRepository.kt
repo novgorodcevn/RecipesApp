@@ -38,14 +38,14 @@ class RecipesRepository {
         return try {
             service.getRecipeById(id).execute().body()
         } catch (e: Exception) {
-
             null
         }
     }
 
-    fun getRecipesByIds(idFavorites: Set<Int>) : List<Recipe>? {
+    fun getRecipesByIds(ids: Set<Int>) : List<Recipe>? {
         return try {
-            service.getRecipesByIds(idFavorites).execute().body()
+            val idsString = ids.joinToString(",")
+            service.getRecipesByIds(idsString).execute().body()
         } catch (e: Exception) {
             null
         }

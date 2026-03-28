@@ -18,6 +18,7 @@ class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(ap
     data class FavoritesUiState(
         val favoritesImage: Drawable? = null,
         val favoritesList: List<Recipe>? = null,
+        val isError: Boolean = true
     )
 
     private val mutableUIState = MutableLiveData<FavoritesUiState>()
@@ -30,9 +31,11 @@ class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(ap
 
     fun loadFavorites() {
         executor.submit {
-            val recipeById =
-                recipesRepository.getRecipesByIds(getFavorites().mapNotNull { it.toIntOrNull() }
-                    .toSet())
+            val ids = getFavorites().mapNotNull { it.toIntOrNull() }.toSet()
+            Log.d("FavoritesViewModel", "ids из SharedPreferences: $ids")
+            val recipeById = recipesRepository.getRecipesByIds(ids)
+            Log.d("FavoritesViewModel", "ответ от сервера: $recipeById")
+
             val drawable = try {
                 "bcg_favorites.png".let {
                     getApplication<Application>().assets?.open(
@@ -48,8 +51,9 @@ class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(ap
             }
             mutableUIState.postValue(
                 FavoritesUiState(
-                    favoritesList = recipeById,
-                    favoritesImage = drawable
+                    favoritesList = recipeById ?: emptyList(),
+                    favoritesImage = drawable,
+                    isError = recipeById == null
                 )
             )
         }
