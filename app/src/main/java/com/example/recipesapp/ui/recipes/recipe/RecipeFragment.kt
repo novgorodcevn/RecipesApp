@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.recipesapp.IngredientsAdapter
 import com.example.recipesapp.MethodAdapter
 import com.example.recipesapp.R
@@ -81,7 +82,11 @@ class RecipeFragment : Fragment() {
             } else {
                 binding.ibFavorite.setImageResource(R.drawable.ic_heart_empty)
             }
-            binding.ivRecipes.setImageDrawable(uiState.recipeImage)
+            Glide.with(this)
+                .load(uiState.imageUrl)
+                .placeholder(R.drawable.img_placeholder)
+                .error(R.drawable.img_error)
+                .into(binding.ivRecipes)
             binding.tvQuantityPortions.text = uiState.portions.toString()
             binding.tvHeadingCategories.text = uiState.tvHeading
 

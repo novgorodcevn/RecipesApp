@@ -5,18 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.example.recipesapp.R
-import com.example.recipesapp.constants.ARG_CATEGORY_ID
-import com.example.recipesapp.constants.ARG_CATEGORY_IMAGE_URL
-import com.example.recipesapp.constants.ARG_CATEGORY_NAME
-import com.example.recipesapp.constants.ARG_RECIPE_ID
 import com.example.recipesapp.databinding.FragmentListRecipesBinding
-import com.example.recipesapp.ui.recipes.recipe.RecipeFragmentArgs
 import kotlin.getValue
 
 class RecipesListFragment : Fragment() {
@@ -61,7 +56,11 @@ class RecipesListFragment : Fragment() {
         })
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
             binding.tvHeadingRecipes.text = uiState.tvHeading
-            binding.ivRecipes.setImageDrawable(uiState.recipeImage)
+            Glide.with(this)
+                .load(uiState.imageUrl)
+                .placeholder(R.drawable.img_placeholder)
+                .error(R.drawable.img_error)
+                .into(binding.ivRecipes)
             customAdapter.updateList(uiState.recipesList ?: emptyList())
             if (uiState.isError) {
                 Toast.makeText(context, "Ошибка получения данных", Toast.LENGTH_SHORT).show()

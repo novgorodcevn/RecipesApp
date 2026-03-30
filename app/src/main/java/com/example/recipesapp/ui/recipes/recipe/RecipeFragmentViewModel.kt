@@ -8,6 +8,7 @@ import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.recipesapp.constants.IMAGE_URL
 import com.example.recipesapp.constants.KEY_FAVORITES_ID
 import com.example.recipesapp.constants.SAVE_FAVORITES_ID
 import com.example.recipesapp.data.recipes.RecipesRepository
@@ -19,7 +20,7 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
     data class RecipeUiState(
         val recipe: Recipe? = null,
         val portions: Int = 1,
-        val recipeImage: Drawable? = null,
+        val imageUrl: String? = null,
         val isFavorite: Boolean = false,
         val tvHeading: String? = null,
         val ingredientsList: List<Ingredient>? = null,
@@ -43,19 +44,7 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
             val recipeById = recipesRepository.getRecipeById(recipeId)
             // TODO: load from network
             if (recipeId != null) {
-                val drawable = try {
-                    recipeById?.imageUrl?.let {
-                        getApplication<Application>().assets?.open(
-                            it
-                        )
-                    }
-                        .use { inputStream ->
-                            Drawable.createFromStream(inputStream, null)
-                        }
-                } catch (e: Exception) {
-                    Log.e("RecipeViewModel", "Ошибка загрузки изображения", e)
-                    null
-                }
+                val imageUrl = "$IMAGE_URL${recipeById?.imageUrl}"
 
                 currentRecipeId = recipeId
                 mutableUIState.postValue(
@@ -63,7 +52,7 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
                             recipe = recipeById,
                             isFavorite = favorites.contains(recipeId.toString()),
                             portions = mutableUIState.value?.portions ?: 1,
-                            recipeImage = drawable,
+                            imageUrl = imageUrl,
                             ingredientsList = recipeById?.ingredients ?: emptyList(),
                             methodList = recipeById?.method ?: emptyList(),
                             tvHeading = recipeById?.title,

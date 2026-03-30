@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
                         it
                     )
                 }
+                Log.i("!!!", "всу: ${categories}")
                 categories?.forEach {
                     Log.i("!!!", "Категори: ${it.id} ${it.title} ${it.description} ${it.imageUrl}")
                 }
