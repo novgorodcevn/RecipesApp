@@ -10,10 +10,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.Executors
 
-
 class RecipesRepository {
 
-    val contentType = "application/json".toMediaType()
     var retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("https://recipes.androidsprint.ru/api/")
         .addConverterFactory(GsonConverterFactory.create())
@@ -27,6 +25,7 @@ class RecipesRepository {
             null
         }
     }
+
     fun getRecipesByCategoryId(id: Int?): List<Recipe>? {
         return try {
             service.getRecipesByCategoryId(id).execute().body()
@@ -34,6 +33,7 @@ class RecipesRepository {
             null
         }
     }
+
     fun getRecipeById(id: Int?): Recipe? {
         return try {
             service.getRecipeById(id).execute().body()
@@ -42,7 +42,7 @@ class RecipesRepository {
         }
     }
 
-    fun getRecipesByIds(ids: Set<Int>) : List<Recipe>? {
+    fun getRecipesByIds(ids: Set<Int>): List<Recipe>? {
         return try {
             val idsString = ids.joinToString(",")
             service.getRecipesByIds(idsString).execute().body()
