@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide
 import com.example.recipesapp.IngredientsAdapter
 import com.example.recipesapp.MethodAdapter
 import com.example.recipesapp.R
-import com.example.recipesapp.constants.ARG_RECIPE_ID
 import com.example.recipesapp.databinding.FragmentRecipeBinding
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
