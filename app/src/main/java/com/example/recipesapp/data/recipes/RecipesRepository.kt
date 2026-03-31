@@ -1,6 +1,7 @@
 package com.example.recipesapp.data.recipes
 
 import android.util.Log
+import com.example.recipesapp.constants.URL
 import com.example.recipesapp.model.Category
 import com.example.recipesapp.model.Recipe
 import okhttp3.MediaType.Companion.toMediaType
@@ -13,7 +14,7 @@ import java.util.concurrent.Executors
 class RecipesRepository {
 
     var retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("https://recipes.androidsprint.ru/api/")
+        .baseUrl(URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
