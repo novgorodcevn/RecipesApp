@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,6 +15,7 @@ import com.example.recipesapp.constants.ARG_CATEGORY_ID
 import com.example.recipesapp.constants.ARG_CATEGORY_IMAGE_URL
 import com.example.recipesapp.constants.ARG_CATEGORY_NAME
 import com.example.recipesapp.constants.ARG_RECIPE_ID
+import com.example.recipesapp.constants.DATA_ERROR
 import com.example.recipesapp.databinding.FragmentListRecipesBinding
 import com.example.recipesapp.ui.recipes.recipe.RecipeFragmentArgs
 import kotlin.getValue
@@ -62,6 +64,9 @@ class RecipesListFragment : Fragment() {
             binding.tvHeadingRecipes.text = uiState.tvHeading
             binding.ivRecipes.setImageDrawable(uiState.recipeImage)
             customAdapter.updateList(uiState.recipesList ?: emptyList())
+            if (uiState.isError) {
+                Toast.makeText(context, DATA_ERROR, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

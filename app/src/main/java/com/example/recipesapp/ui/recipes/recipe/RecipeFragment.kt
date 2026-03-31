@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,6 +15,7 @@ import com.example.recipesapp.IngredientsAdapter
 import com.example.recipesapp.MethodAdapter
 import com.example.recipesapp.R
 import com.example.recipesapp.constants.ARG_RECIPE_ID
+import com.example.recipesapp.constants.DATA_ERROR
 import com.example.recipesapp.databinding.FragmentRecipeBinding
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
@@ -87,6 +89,9 @@ class RecipeFragment : Fragment() {
             customAdapterIngredients.updateList(uiState.ingredientsList ?: emptyList())
             customAdapterMethod.updateList(uiState.methodList ?: emptyList())
             customAdapterIngredients.updateIngredients(uiState.portions)
+            if (uiState.isError) {
+                Toast.makeText(context, DATA_ERROR, Toast.LENGTH_SHORT).show()
+            }
         }
         binding.sbRecipe.setOnSeekBarChangeListener(PortionSeekBarListener { progress ->
             viewModel.updatingPortions(

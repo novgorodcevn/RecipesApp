@@ -38,11 +38,12 @@ class IngredientsAdapter(private var dataSet: List<Ingredient>) :
 
     override fun onBindViewHolder(viewHolder: IngredientsAdapter.ViewHolder, position: Int) {
         val ingredient: Ingredient = dataSet[position]
-        val quantityText = BigDecimal(ingredient.quantity)
-            .multiply(BigDecimal(quantity))
-            .setScale(2, RoundingMode.DOWN)
-            .stripTrailingZeros()
-            .toPlainString()
+        val quantityText = ingredient.quantity.toBigDecimalOrNull()
+            ?.multiply(BigDecimal(quantity))
+            ?.setScale(2, RoundingMode.DOWN)
+            ?.stripTrailingZeros()
+            ?.toPlainString()
+            ?: ingredient.quantity
         val quantityRecipe = "$quantityText ${ingredient.unitOfMeasure}"
         viewHolder.binding.tvDescriptionRecipe.text = ingredient.description
         viewHolder.binding.tvQuantityRecipe.text = quantityRecipe
