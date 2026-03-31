@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.recipesapp.constants.IMAGE_BCG_CATEGORIES
 import com.example.recipesapp.data.recipes.RecipesRepository
-import com.example.recipesapp.data.recipes.STUB
 import com.example.recipesapp.model.Category
 import java.util.concurrent.Executors
 
