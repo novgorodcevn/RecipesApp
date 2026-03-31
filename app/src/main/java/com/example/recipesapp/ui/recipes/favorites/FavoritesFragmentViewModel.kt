@@ -7,12 +7,13 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.recipesapp.constants.IMAGE_BCG_FAVORITES
 import com.example.recipesapp.constants.KEY_FAVORITES_ID
 import com.example.recipesapp.constants.SAVE_FAVORITES_ID
 import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.model.Recipe
-import java.util.concurrent.Executors
+import kotlinx.coroutines.launch
 
 class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -27,35 +28,29 @@ class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(ap
 
     private val sharedPref =
         application.getSharedPreferences(SAVE_FAVORITES_ID, Context.MODE_PRIVATE)
-    private val executor = Executors.newCachedThreadPool()
     private val recipesRepository = RecipesRepository()
 
-    fun loadFavorites() {
-        executor.submit {
-            val ids = getFavorites().mapNotNull { it.toIntOrNull() }.toSet()
-            Log.d("FavoritesViewModel", "ids из SharedPreferences: $ids")
-            val recipeById = recipesRepository.getRecipesByIds(ids)
-            Log.d("FavoritesViewModel", "ответ от сервера: $recipeById")
-
-            val drawable = try {
-                IMAGE_BCG_FAVORITES.let {
-                    getApplication<Application>().assets?.open(
-                        it
-                    )
-                }
-                    .use { inputStream ->
-                        Drawable.createFromStream(inputStream, null)
-                    }
-            } catch (e: Exception) {
-                Log.e("CategoriesViewModel", "Ошибка загрузки изображения", e)
-                null
-            }
-            mutableUIState.postValue(
-                FavoritesUiState(
-                    favoritesList = recipeById ?: emptyList(),
-                    favoritesImage = drawable,
-                    isError = recipeById == null
+   fun loadFavorites() {
+       val ids = getFavorites().mapNotNull { it.toIntOrNull() }.toSet()
+       val drawable = try {
+            IMAGE_BCG_FAVORITES.let {
+                getApplication<Application>().assets?.open(
+                    it
                 )
+            }
+                .use { inputStream ->
+                    Drawable.createFromStream(inputStream, null)
+                }
+        } catch (e: Exception) {
+            Log.e("CategoriesViewModel", "Ошибка загрузки изображения", e)
+            null
+        }
+        viewModelScope.launch {
+            val recipeById = recipesRepository.getRecipesByIds(ids)
+            mutableUIState.value = FavoritesUiState(
+                favoritesList = recipeById ?: emptyList(),
+                favoritesImage = drawable,
+                isError = recipeById == null
             )
         }
     }

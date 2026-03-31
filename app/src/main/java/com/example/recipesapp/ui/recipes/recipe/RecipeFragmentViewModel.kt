@@ -6,13 +6,14 @@ import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.recipesapp.constants.IMAGE_URL
 import com.example.recipesapp.constants.KEY_FAVORITES_ID
 import com.example.recipesapp.constants.SAVE_FAVORITES_ID
 import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.model.Ingredient
 import com.example.recipesapp.model.Recipe
-import java.util.concurrent.Executors
+import kotlinx.coroutines.launch
 
 class RecipeFragmentViewModel(application: Application) : AndroidViewModel(application) {
     data class RecipeUiState(
@@ -32,31 +33,26 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
     private val mutableUIState = MutableLiveData<RecipeUiState>()
 
     private val recipesRepository = RecipesRepository()
-    private val executor = Executors.newCachedThreadPool()
     val uiState: LiveData<RecipeUiState> get() = mutableUIState
 
     private var currentRecipeId: Int? = null
 
     fun loadRecipe(recipeId: Int?) {
-        executor.submit {
+        viewModelScope.launch {
             val recipeById = recipesRepository.getRecipeById(recipeId)
-            // TODO: load from network
             if (recipeId != null) {
                 val imageUrl = "$IMAGE_URL${recipeById?.imageUrl}"
-
                 currentRecipeId = recipeId
-                mutableUIState.postValue(
-                        RecipeUiState(
-                            recipe = recipeById,
-                            isFavorite = favorites.contains(recipeId.toString()),
-                            portions = mutableUIState.value?.portions ?: 1,
-                            imageUrl = imageUrl,
-                            ingredientsList = recipeById?.ingredients ?: emptyList(),
-                            methodList = recipeById?.method ?: emptyList(),
-                            tvHeading = recipeById?.title,
-                            isError = recipeById == null
-                        )
-                    )
+                mutableUIState.value = RecipeUiState(
+                    recipe = recipeById,
+                    isFavorite = favorites.contains(recipeId.toString()),
+                    portions = mutableUIState.value?.portions ?: 1,
+                    imageUrl = imageUrl,
+                    ingredientsList = recipeById?.ingredients ?: emptyList(),
+                    methodList = recipeById?.method ?: emptyList(),
+                    tvHeading = recipeById?.title,
+                    isError = recipeById == null
+                )
             }
         }
     }

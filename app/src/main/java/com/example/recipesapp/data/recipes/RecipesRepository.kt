@@ -4,6 +4,8 @@ import android.util.Log
 import com.example.recipesapp.constants.URL
 import com.example.recipesapp.model.Category
 import com.example.recipesapp.model.Recipe
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Call
 import retrofit2.Response
@@ -19,36 +21,46 @@ class RecipesRepository {
         .build()
 
     val service: RecipeApiService = retrofit.create(RecipeApiService::class.java)
-    fun getCategories(): List<Category>? {
-        return try {
-            service.getCategories().execute().body()
-        } catch (e: Exception) {
-            null
+
+
+    suspend fun getCategories(): List<Category>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                service.getCategories().execute().body()
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 
-    fun getRecipesByCategoryId(id: Int?): List<Recipe>? {
-        return try {
-            service.getRecipesByCategoryId(id).execute().body()
-        } catch (e: Exception) {
-            null
+    suspend fun getRecipesByCategoryId(id: Int?): List<Recipe>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                service.getRecipesByCategoryId(id).execute().body()
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 
-    fun getRecipeById(id: Int?): Recipe? {
-        return try {
-            service.getRecipeById(id).execute().body()
-        } catch (e: Exception) {
-            null
+    suspend fun getRecipeById(id: Int?): Recipe? {
+        return withContext(Dispatchers.IO) {
+            try {
+                service.getRecipeById(id).execute().body()
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 
-    fun getRecipesByIds(ids: Set<Int>): List<Recipe>? {
-        return try {
-            val idsString = ids.joinToString(",")
-            service.getRecipesByIds(idsString).execute().body()
-        } catch (e: Exception) {
-            null
+    suspend fun getRecipesByIds(ids: Set<Int>): List<Recipe>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val idsString = ids.joinToString(",")
+                service.getRecipesByIds(idsString).execute().body()
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 }
