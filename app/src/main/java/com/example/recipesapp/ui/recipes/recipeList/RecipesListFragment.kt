@@ -11,6 +11,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.recipesapp.R
+import com.example.recipesapp.constants.ARG_CATEGORY_ID
+import com.example.recipesapp.constants.ARG_CATEGORY_IMAGE_URL
+import com.example.recipesapp.constants.ARG_CATEGORY_NAME
+import com.example.recipesapp.constants.ARG_RECIPE_ID
+import com.example.recipesapp.constants.DATA_ERROR
 import com.example.recipesapp.databinding.FragmentListRecipesBinding
 import kotlin.getValue
 
@@ -63,7 +68,7 @@ class RecipesListFragment : Fragment() {
                 .into(binding.ivRecipes)
             customAdapter.updateList(uiState.recipesList ?: emptyList())
             if (uiState.isError) {
-                Toast.makeText(context, "Ошибка получения данных", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, DATA_ERROR, Toast.LENGTH_SHORT).show()
             }
         }
     }

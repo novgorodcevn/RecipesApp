@@ -59,7 +59,6 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
                             isError = recipeById == null
                         )
                     )
-
             }
         }
     }

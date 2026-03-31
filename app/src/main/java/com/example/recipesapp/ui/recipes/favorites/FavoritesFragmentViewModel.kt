@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.recipesapp.constants.IMAGE_BCG_FAVORITES
 import com.example.recipesapp.constants.KEY_FAVORITES_ID
 import com.example.recipesapp.constants.SAVE_FAVORITES_ID
 import com.example.recipesapp.data.recipes.RecipesRepository
@@ -37,7 +38,7 @@ class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(ap
             Log.d("FavoritesViewModel", "ответ от сервера: $recipeById")
 
             val drawable = try {
-                "bcg_favorites.png".let {
+                IMAGE_BCG_FAVORITES.let {
                     getApplication<Application>().assets?.open(
                         it
                     )

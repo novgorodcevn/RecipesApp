@@ -15,6 +15,8 @@ import com.bumptech.glide.Glide
 import com.example.recipesapp.IngredientsAdapter
 import com.example.recipesapp.MethodAdapter
 import com.example.recipesapp.R
+import com.example.recipesapp.constants.ARG_RECIPE_ID
+import com.example.recipesapp.constants.DATA_ERROR
 import com.example.recipesapp.databinding.FragmentRecipeBinding
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
@@ -93,7 +95,7 @@ class RecipeFragment : Fragment() {
             customAdapterMethod.updateList(uiState.methodList ?: emptyList())
             customAdapterIngredients.updateIngredients(uiState.portions)
             if (uiState.isError) {
-                Toast.makeText(context, "Ошибка получения данных", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, DATA_ERROR, Toast.LENGTH_SHORT).show()
             }
         }
         binding.sbRecipe.setOnSeekBarChangeListener(PortionSeekBarListener { progress ->

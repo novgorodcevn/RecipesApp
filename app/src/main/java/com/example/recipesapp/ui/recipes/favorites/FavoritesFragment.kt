@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.recipesapp.R
 import com.example.recipesapp.ui.recipes.recipeList.RecipesListAdapter
 import com.example.recipesapp.constants.ARG_RECIPE_ID
+import com.example.recipesapp.constants.DATA_ERROR
 import com.example.recipesapp.databinding.FragmentFavoritesBinding
 import kotlin.getValue
 
@@ -65,7 +66,7 @@ class FavoritesFragment : Fragment() {
                 }
             }
             if (uiState.isError) {
-                Toast.makeText(context, "Ошибка получения данных", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, DATA_ERROR, Toast.LENGTH_SHORT).show()
             }
         }
     }

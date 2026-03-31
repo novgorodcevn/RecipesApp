@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.recipesapp.constants.DATA_ERROR
 import com.example.recipesapp.databinding.FragmentListCategoriesBinding
 import kotlin.getValue
 
@@ -64,7 +65,7 @@ class CategoriesListFragment : Fragment() {
             binding.ivCategories.setImageDrawable(uiState.categoryImage)
             customAdapter.updateList(uiState.category ?: emptyList())
             if (uiState.isError) {
-                Toast.makeText(context, "Ошибка получения данных", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, DATA_ERROR, Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.recipesapp.constants.IMAGE_BCG_CATEGORIES
 import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.data.recipes.STUB
 import com.example.recipesapp.model.Category
@@ -25,7 +26,7 @@ class CategoriesListFragmentViewModel(application: Application) : AndroidViewMod
     fun loadCategories() {
         executor.submit {
             val drawable = try {
-                "bcg_categories.png".let {
+                IMAGE_BCG_CATEGORIES.let {
                     getApplication<Application>().assets?.open(
                         it
                     )
@@ -50,6 +51,6 @@ class CategoriesListFragmentViewModel(application: Application) : AndroidViewMod
     }
 
     fun getCategory(categoryId: Int): Category? {
-        return  STUB.getCategories().find { it.id == categoryId }
+        return  mutableUIState.value?.category?.find { it.id == categoryId }
     }
 }
