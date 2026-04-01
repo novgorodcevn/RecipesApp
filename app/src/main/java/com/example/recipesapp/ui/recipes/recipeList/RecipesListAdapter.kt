@@ -1,14 +1,13 @@
 package com.example.recipesapp.ui.recipes.recipeList
 
-import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.recipesapp.R
+import com.example.recipesapp.constants.IMAGE_URL
 import com.example.recipesapp.databinding.ItemRecipesBinding
-import com.example.recipesapp.model.Ingredient
 import com.example.recipesapp.model.Recipe
 
 class RecipesListAdapter(private var dataSet: List<Recipe>) :
@@ -46,15 +45,13 @@ class RecipesListAdapter(private var dataSet: List<Recipe>) :
             itemClickListener?.onItemClick(recipe.id)
         }
 
-        val image = try {
-            viewHolder.itemView.context.assets.open(recipe.imageUrl).use { inputStream ->
-                Drawable.createFromStream(inputStream, null)
-            }
-        } catch (e: Exception) {
-            Log.e("error", "Error loading image: ${recipe.imageUrl}", e)
-            null
-        }
-        viewHolder.binding.ivItemRecipes.setImageDrawable(image)
+        val imageUrl = "$IMAGE_URL${recipe.imageUrl}"
+
+        Glide.with(viewHolder.itemView.context)
+            .load(imageUrl)
+            .placeholder(R.drawable.img_placeholder)
+            .error(R.drawable.img_error)
+            .into(viewHolder.binding.ivItemRecipes)
     }
 
     override fun getItemCount() = dataSet.size

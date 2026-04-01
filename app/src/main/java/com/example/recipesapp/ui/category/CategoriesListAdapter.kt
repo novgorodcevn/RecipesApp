@@ -1,15 +1,14 @@
 package com.example.recipesapp.ui.category
 
-import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.recipesapp.model.Category
 import com.example.recipesapp.R
+import com.example.recipesapp.constants.IMAGE_URL
 import com.example.recipesapp.databinding.ItemCategoryBinding
-import com.example.recipesapp.model.Ingredient
 
 class CategoriesListAdapter(private var dataSet: List<Category>) :
     RecyclerView.Adapter<CategoriesListAdapter.ViewHolder>() {
@@ -45,16 +44,13 @@ class CategoriesListAdapter(private var dataSet: List<Category>) :
         viewHolder.binding.cwItemCategory.setOnClickListener {
             itemClickListener?.onItemClick(category.id)
         }
+        val imageUrl = "$IMAGE_URL${category.imageUrl}"
 
-        val image = try {
-            viewHolder.itemView.context.assets.open(category.imageUrl).use { inputStream ->
-                Drawable.createFromStream(inputStream, null)
-            }
-        } catch (e: Exception) {
-            Log.e("error", "Error loading image: ${category.imageUrl}", e)
-            null
-        }
-        viewHolder.binding.ivItemCategory.setImageDrawable(image)
+        Glide.with(viewHolder.itemView.context)
+            .load(imageUrl)
+            .placeholder(R.drawable.img_placeholder)
+            .error(R.drawable.img_error)
+            .into(viewHolder.binding.ivItemCategory)
     }
 
     override fun getItemCount() = dataSet.size
