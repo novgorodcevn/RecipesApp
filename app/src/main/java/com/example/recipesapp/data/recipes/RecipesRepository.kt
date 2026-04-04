@@ -22,7 +22,6 @@ class RecipesRepository {
 
     val service: RecipeApiService = retrofit.create(RecipeApiService::class.java)
 
-
     suspend fun getCategories(): List<Category>? {
         return withContext(Dispatchers.IO) {
             try {
