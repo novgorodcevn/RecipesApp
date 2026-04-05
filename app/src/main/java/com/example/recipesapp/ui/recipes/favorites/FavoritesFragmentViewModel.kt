@@ -31,6 +31,7 @@ class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(ap
     private val recipesRepository = RecipesRepository()
 
    fun loadFavorites() {
+
        val ids = getFavorites().mapNotNull { it.toIntOrNull() }.toSet()
        val drawable = try {
             IMAGE_BCG_FAVORITES.let {
