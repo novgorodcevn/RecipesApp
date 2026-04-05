@@ -28,9 +28,10 @@ class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(ap
 
     private val sharedPref =
         application.getSharedPreferences(SAVE_FAVORITES_ID, Context.MODE_PRIVATE)
-    private val recipesRepository = RecipesRepository()
+    private val recipesRepository = RecipesRepository(application)
 
    fun loadFavorites() {
+
        val ids = getFavorites().mapNotNull { it.toIntOrNull() }.toSet()
        val drawable = try {
             IMAGE_BCG_FAVORITES.let {

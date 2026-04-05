@@ -1,19 +1,19 @@
 package com.example.recipesapp.data.recipes
 
-import android.util.Log
+
+import android.app.Application
+import androidx.room.Room
 import com.example.recipesapp.constants.URL
+import com.example.recipesapp.data.category.AppDatabase
+import com.example.recipesapp.data.category.CategoriesDao
 import com.example.recipesapp.model.Category
 import com.example.recipesapp.model.Recipe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
-import retrofit2.Call
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.Executors
 
-class RecipesRepository {
+class RecipesRepository(application: Application) {
 
     var retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(URL)
@@ -21,6 +21,23 @@ class RecipesRepository {
         .build()
 
     val service: RecipeApiService = retrofit.create(RecipeApiService::class.java)
+
+    val db = Room.databaseBuilder(
+        application,
+        AppDatabase::class.java, "database-name"
+    ).build()
+
+    val categoriesDao = db.categoriesDao()
+
+    suspend fun getCategoriesFromCache(): List<Category> {
+        return withContext(Dispatchers.IO) { categoriesDao.getAll() }
+    }
+
+    suspend fun saveCategoriesToCache(category: List<Category>) {
+        withContext(Dispatchers.IO) {
+            categoriesDao.insertAll(category)
+        }
+    }
 
     suspend fun getCategories(): List<Category>? {
         return withContext(Dispatchers.IO) {

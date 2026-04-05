@@ -32,7 +32,7 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
     private val favorites = getFavorites()
     private val mutableUIState = MutableLiveData<RecipeUiState>()
 
-    private val recipesRepository = RecipesRepository()
+    private val recipesRepository = RecipesRepository(application)
     val uiState: LiveData<RecipeUiState> get() = mutableUIState
 
     private var currentRecipeId: Int? = null

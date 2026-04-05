@@ -21,7 +21,7 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
 
     private val mutableUIState = MutableLiveData<RecipesUiState>()
     val uiState: LiveData<RecipesUiState> get() = mutableUIState
-    private val recipesRepository = RecipesRepository()
+    private val recipesRepository = RecipesRepository(application)
 
     fun loadRecipe(recipeId: Int?, recipeName: String?, recipeImage: String?) {
         viewModelScope.launch {
