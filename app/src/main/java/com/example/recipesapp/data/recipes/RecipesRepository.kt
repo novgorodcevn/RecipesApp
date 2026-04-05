@@ -5,7 +5,6 @@ import android.app.Application
 import androidx.room.Room
 import com.example.recipesapp.constants.URL
 import com.example.recipesapp.data.category.AppDatabase
-import com.example.recipesapp.data.category.CategoriesDao
 import com.example.recipesapp.model.Category
 import com.example.recipesapp.model.Recipe
 import kotlinx.coroutines.Dispatchers
@@ -25,9 +24,10 @@ class RecipesRepository(application: Application) {
     val db = Room.databaseBuilder(
         application,
         AppDatabase::class.java, "database-name"
-    ).build()
+    ).fallbackToDestructiveMigration().build()
 
     val categoriesDao = db.categoriesDao()
+    val recipesDao = db.recipesDao()
 
     suspend fun getCategoriesFromCache(): List<Category> {
         return withContext(Dispatchers.IO) { categoriesDao.getAll() }
@@ -36,6 +36,16 @@ class RecipesRepository(application: Application) {
     suspend fun saveCategoriesToCache(category: List<Category>) {
         withContext(Dispatchers.IO) {
             categoriesDao.insertAll(category)
+        }
+    }
+
+    suspend fun getRecipesFromCache(id: Int?): List<Recipe> {
+        return withContext(Dispatchers.IO) { recipesDao.getAll(id) }
+    }
+
+    suspend fun saveRecipesToCache(recipes: List<Recipe>) {
+        withContext(Dispatchers.IO) {
+            recipesDao.insertAll(recipes)
         }
     }
 

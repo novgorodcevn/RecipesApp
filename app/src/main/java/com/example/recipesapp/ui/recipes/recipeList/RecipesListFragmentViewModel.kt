@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.recipesapp.constants.IMAGE_URL
 import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.model.Recipe
+import com.example.recipesapp.ui.category.CategoriesListFragmentViewModel.CategoriesUiState
 import kotlinx.coroutines.launch
 
 class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(application) {
@@ -25,16 +26,24 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
 
     fun loadRecipe(recipeId: Int?, recipeName: String?, recipeImage: String?) {
         viewModelScope.launch {
-              val imageUrl = "$IMAGE_URL$recipeImage"
-              if (recipeId != null) {
-                  val recipesByCategoryId = recipesRepository.getRecipesByCategoryId(recipeId)
-                  mutableUIState.value = RecipesUiState(
-                      imageUrl = imageUrl,
-                      recipesList = recipesByCategoryId,
-                      tvHeading = recipeName,
-                      isError = recipesByCategoryId == null
-                  )
-              }
-          }
+            val recipesCache = recipesRepository.getRecipesFromCache(recipeId)
+            val imageUrl = "$IMAGE_URL$recipeImage"
+            if (recipeId != null) {
+                val recipesByCategoryId = recipesRepository.getRecipesByCategoryId(recipeId)
+                mutableUIState.value = RecipesUiState(
+                    imageUrl = imageUrl,
+                    recipesList = recipesCache,
+                    tvHeading = recipeName,
+                    isError = recipesByCategoryId == null
+                )
+                recipesByCategoryId?.let { recipesRepository.saveRecipesToCache(it) }
+                val currentState = mutableUIState.value ?: RecipesUiState()
+                recipesByCategoryId?.let {
+                    mutableUIState.value = currentState.copy(
+                        recipesList = it
+                    )
+                }
+            }
+        }
     }
 }
