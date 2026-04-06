@@ -20,7 +20,7 @@ class CategoriesListFragmentViewModel(application: Application) : AndroidViewMod
     data class CategoriesUiState(
         val category: List<Category>? = null,
         val categoryImage: Drawable? = null,
-        val isError: Boolean = true
+        val isError: Boolean = false
     )
 
     private val recipesRepository = RecipesRepository(application)
@@ -43,17 +43,17 @@ class CategoriesListFragmentViewModel(application: Application) : AndroidViewMod
         }
         viewModelScope.launch {
             val categoryCache = recipesRepository.getCategoriesFromCache()
-            val category = recipesRepository.getCategories()
             mutableUIState.value = CategoriesUiState(
                 categoryImage = drawable,
                 category = categoryCache,
-                isError = category == null
             )
+            val category = recipesRepository.getCategories()
             category?.let { recipesRepository.saveCategoriesToCache(it) }
             val currentState = mutableUIState.value ?: CategoriesUiState()
             category?.let {
                 mutableUIState.value = currentState.copy(
-                    category = it
+                    category = it,
+                    isError = false
                 )
             }
         }
