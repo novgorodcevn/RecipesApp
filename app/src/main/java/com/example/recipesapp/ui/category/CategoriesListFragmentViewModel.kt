@@ -48,13 +48,14 @@ class CategoriesListFragmentViewModel(application: Application) : AndroidViewMod
                 category = categoryCache,
             )
             val category = recipesRepository.getCategories()
-            category?.let { recipesRepository.saveCategoriesToCache(it) }
-            val currentState = mutableUIState.value ?: CategoriesUiState()
-
-            mutableUIState.value = currentState.copy(
-                category = category,
-                isError = category == null
-            )
+            category?.let {
+                recipesRepository.saveCategoriesToCache(it)
+                val currentState = mutableUIState.value ?: CategoriesUiState()
+                mutableUIState.value = currentState.copy(
+                    category = it,
+                    isError = false
+                )
+            }
         }
     }
 
