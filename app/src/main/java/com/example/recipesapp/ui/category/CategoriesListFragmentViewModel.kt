@@ -50,12 +50,11 @@ class CategoriesListFragmentViewModel(application: Application) : AndroidViewMod
             val category = recipesRepository.getCategories()
             category?.let { recipesRepository.saveCategoriesToCache(it) }
             val currentState = mutableUIState.value ?: CategoriesUiState()
-            category?.let {
-                mutableUIState.value = currentState.copy(
-                    category = it,
-                    isError = false
-                )
-            }
+
+            mutableUIState.value = currentState.copy(
+                category = category,
+                isError = category == null
+            )
         }
     }
 
