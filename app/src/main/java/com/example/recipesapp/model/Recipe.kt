@@ -13,6 +13,7 @@ import kotlinx.serialization.Serializable
 data class Recipe(
     @PrimaryKey
     val id: Int,
+    val isFavorite: Boolean = false,
     val title: String,
     val categoryId: Int,
     val ingredients: List<Ingredient>,
