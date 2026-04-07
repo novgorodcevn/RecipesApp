@@ -10,11 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.recipesapp.constants.IMAGE_BCG_CATEGORIES
 import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.model.Category
-import com.example.recipesapp.ui.recipes.recipe.RecipeFragmentViewModel.RecipeUiState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.Dispatcher
 
 class CategoriesListFragmentViewModel(application: Application) : AndroidViewModel(application) {
     data class CategoriesUiState(
@@ -49,12 +45,16 @@ class CategoriesListFragmentViewModel(application: Application) : AndroidViewMod
             )
             val category = recipesRepository.getCategories()
             category?.let {
-                recipesRepository.saveCategoriesToCache(it)
                 val currentState = mutableUIState.value ?: CategoriesUiState()
-                mutableUIState.value = currentState.copy(
-                    category = it,
-                    isError = false
-                )
+                if (category != null) {
+                    recipesRepository.saveCategoriesToCache(it)
+                    mutableUIState.value = currentState.copy(
+                        category = it,
+                        isError = false
+                    )
+                } else if (categoryCache.isEmpty()) {
+                    mutableUIState.value = currentState.copy(isError = true)
+                }
             }
         }
     }
