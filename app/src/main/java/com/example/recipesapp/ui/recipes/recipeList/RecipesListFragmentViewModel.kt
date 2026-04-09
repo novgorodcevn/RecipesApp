@@ -4,10 +4,11 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.recipesapp.constants.IMAGE_URL
 import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.model.Recipe
-import java.util.concurrent.Executors
+import kotlinx.coroutines.launch
 
 class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -20,25 +21,20 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
 
     private val mutableUIState = MutableLiveData<RecipesUiState>()
     val uiState: LiveData<RecipesUiState> get() = mutableUIState
-    private val recipesRepository = RecipesRepository()
-    private val executor = Executors.newCachedThreadPool()
+    private val recipesRepository = RecipesRepository(application)
+
     fun loadRecipe(recipeId: Int?, recipeName: String?, recipeImage: String?) {
-        // TODO: load from network
-        executor.submit {
-
-            val imageUrl = "$IMAGE_URL$recipeImage"
-
-            if (recipeId != null) {
-                val recipesByCategoryId = recipesRepository.getRecipesByCategoryId(recipeId)
-                mutableUIState.postValue(
-                    RecipesUiState(
-                        imageUrl = imageUrl,
-                        recipesList = recipesByCategoryId,
-                        tvHeading = recipeName,
-                        isError = recipesByCategoryId == null
-                    )
-                )
-            }
-        }
+        viewModelScope.launch {
+              val imageUrl = "$IMAGE_URL$recipeImage"
+              if (recipeId != null) {
+                  val recipesByCategoryId = recipesRepository.getRecipesByCategoryId(recipeId)
+                  mutableUIState.value = RecipesUiState(
+                      imageUrl = imageUrl,
+                      recipesList = recipesByCategoryId,
+                      tvHeading = recipeName,
+                      isError = recipesByCategoryId == null
+                  )
+              }
+          }
     }
 }

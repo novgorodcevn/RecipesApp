@@ -1,54 +1,80 @@
 package com.example.recipesapp.data.recipes
 
-import android.util.Log
+import android.app.Application
+import androidx.room.Room
 import com.example.recipesapp.constants.URL
+import com.example.recipesapp.data.category.AppDatabase
 import com.example.recipesapp.model.Category
 import com.example.recipesapp.model.Recipe
-import okhttp3.MediaType.Companion.toMediaType
-import retrofit2.Call
-import retrofit2.Response
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.Executors
 
-class RecipesRepository {
+class RecipesRepository(application: Application) {
 
-    var retrofit: Retrofit = Retrofit.Builder()
+    private var retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val service: RecipeApiService = retrofit.create(RecipeApiService::class.java)
-    fun getCategories(): List<Category>? {
-        return try {
-            service.getCategories().execute().body()
-        } catch (e: Exception) {
-            null
+    private val service: RecipeApiService = retrofit.create(RecipeApiService::class.java)
+
+    private val db = Room.databaseBuilder(
+        application,
+        AppDatabase::class.java, "database-name"
+    ).build()
+
+    private val categoriesDao = db.categoriesDao()
+
+    suspend fun getCategoriesFromCache(): List<Category> {
+        return withContext(Dispatchers.IO) { categoriesDao.getAll() }
+    }
+
+    suspend fun saveCategoriesToCache(category: List<Category>) {
+        withContext(Dispatchers.IO) {
+            categoriesDao.insertAll(category)
         }
     }
 
-    fun getRecipesByCategoryId(id: Int?): List<Recipe>? {
-        return try {
-            service.getRecipesByCategoryId(id).execute().body()
-        } catch (e: Exception) {
-            null
+    suspend fun getCategories(): List<Category>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                service.getCategories().execute().body()
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 
-    fun getRecipeById(id: Int?): Recipe? {
-        return try {
-            service.getRecipeById(id).execute().body()
-        } catch (e: Exception) {
-            null
+    suspend fun getRecipesByCategoryId(id: Int?): List<Recipe>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                service.getRecipesByCategoryId(id).execute().body()
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 
-    fun getRecipesByIds(ids: Set<Int>): List<Recipe>? {
-        return try {
-            val idsString = ids.joinToString(",")
-            service.getRecipesByIds(idsString).execute().body()
-        } catch (e: Exception) {
-            null
+    suspend fun getRecipeById(id: Int?): Recipe? {
+        return withContext(Dispatchers.IO) {
+            try {
+                service.getRecipeById(id).execute().body()
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+
+    suspend fun getRecipesByIds(ids: Set<Int>): List<Recipe>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val idsString = ids.joinToString(",")
+                service.getRecipesByIds(idsString).execute().body()
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 }

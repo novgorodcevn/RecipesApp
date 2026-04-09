@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
         get() = _binding
             ?: throw IllegalStateException("Binding for ActivityMainBinding must not be null")
 
-    private val threadPool = Executors.newFixedThreadPool(10)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
@@ -34,64 +33,6 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val json = Json {
-            ignoreUnknownKeys = true
-        }
-
-        Log.i("!!!", "Метод onCreate() выполняется на потоке:${Thread.currentThread().name} ")
-
-        threadPool.execute {
-            val logging = HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
-            val client: OkHttpClient = OkHttpClient.Builder()
-                .addInterceptor(logging)
-                .build()
-
-            val request: Request = Request.Builder()
-                .url("https://recipes.androidsprint.ru/api/category")
-                .build()
-            Log.i("!!!", "Выполняю запрос на потоке:${Thread.currentThread().name} ")
-
-            client.newCall(request).execute().use { response ->
-                val data = response.body?.string()
-                val categories = data?.let {
-                    json.decodeFromString<List<Category>>(
-                        it
-                    )
-                }
-                Log.i("!!!", "всу: ${categories}")
-                categories?.forEach {
-                    Log.i("!!!", "Категори: ${it.id} ${it.title} ${it.description} ${it.imageUrl}")
-                }
-                if (categories != null) {
-                    val categoriesId: List<Int> = categories.map { it.id }
-                    Log.i("!!!", "categories: $categoriesId")
-                    categoriesId.forEach { id ->
-                        threadPool.execute {
-                            val request: Request = Request.Builder()
-                                .url("https://recipes.androidsprint.ru/api/category/$id/recipes")
-                                .build()
-                            try {
-                                client.newCall(request).execute().use { response ->
-                                    val data = response.body?.string()
-                                    val recipes = data?.let {
-                                        json.decodeFromString<List<Recipe>>(
-                                            it
-                                        )
-                                    }
-                                    recipes?.forEach {
-                                        Log.i("!!!", "Рецепт: ${it.title}")
-                                    }
-                                }
-                            } catch (e: Exception) {
-                                Log.e("!!!", "Ошибка при парсинге рецептов ID $id: ${e.message}", e)
-                            }
-                        }
-                    }
-                }
-            }
-        }
         with(binding) {
             btnCategories.setOnClickListener {
                 findNavController(nav_host_fragment).navigate(R.id.categoriesListFragment)
@@ -100,10 +41,5 @@ class MainActivity : AppCompatActivity() {
                 findNavController(nav_host_fragment).navigate(R.id.favoritesFragment)
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        threadPool.shutdown()
     }
 }
