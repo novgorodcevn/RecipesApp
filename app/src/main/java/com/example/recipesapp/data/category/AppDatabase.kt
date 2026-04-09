@@ -9,7 +9,7 @@ import com.example.recipesapp.model.Category
 import com.example.recipesapp.model.Recipe
 
 @TypeConverters(Converters::class)
-@Database(entities = [Category::class, Recipe::class], version = 2)
+@Database(entities = [Category::class, Recipe::class], version = 2,exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun categoriesDao(): CategoriesDao
 

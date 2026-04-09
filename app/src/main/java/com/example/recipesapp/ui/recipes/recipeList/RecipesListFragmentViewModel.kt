@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.recipesapp.constants.IMAGE_URL
 import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.model.Recipe
-import com.example.recipesapp.ui.category.CategoriesListFragmentViewModel.CategoriesUiState
 import kotlinx.coroutines.launch
 
 class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(application) {
@@ -17,7 +16,7 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
         val imageUrl: String? = null,
         val tvHeading: String? = null,
         val recipesList: List<Recipe>? = null,
-        val isError: Boolean = true,
+        val isError: Boolean = false,
     )
 
     private val mutableUIState = MutableLiveData<RecipesUiState>()
@@ -29,19 +28,24 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
             val recipesCache = recipesRepository.getRecipesFromCache(recipeId)
             val imageUrl = "$IMAGE_URL$recipeImage"
             if (recipeId != null) {
-                val recipesByCategoryId = recipesRepository.getRecipesByCategoryId(recipeId)
+
                 mutableUIState.value = RecipesUiState(
                     imageUrl = imageUrl,
                     recipesList = recipesCache,
                     tvHeading = recipeName,
-                    isError = recipesByCategoryId == null
                 )
-                recipesByCategoryId?.let { recipesRepository.saveRecipesToCache(it) }
-                val currentState = mutableUIState.value ?: RecipesUiState()
-                recipesByCategoryId?.let {
-                    mutableUIState.value = currentState.copy(
-                        recipesList = it
-                    )
+                val recipesByCategoryId = recipesRepository.getRecipesByCategoryId(recipeId)
+                recipesByCategoryId?.map { it.copy(categoryId = recipeId) }?.let {
+                    recipesRepository.saveRecipesToCache(it)
+                    val currentState = mutableUIState.value ?: RecipesUiState()
+                    if (recipesByCategoryId != null) {
+                        mutableUIState.value = currentState.copy(
+                            recipesList = it,
+                            isError = false
+                        )
+                    } else if (recipesCache.isEmpty()) {
+                        mutableUIState.value = currentState.copy(isError = true)
+                    }
                 }
             }
         }
