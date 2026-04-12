@@ -10,17 +10,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.recipesapp.constants.IMAGE_BCG_CATEGORIES
 import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.model.Category
-import com.example.recipesapp.ui.recipes.recipe.RecipeFragmentViewModel.RecipeUiState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.Dispatcher
 
 class CategoriesListFragmentViewModel(application: Application) : AndroidViewModel(application) {
     data class CategoriesUiState(
         val category: List<Category>? = null,
         val categoryImage: Drawable? = null,
-        val isError: Boolean = true
+        val isError: Boolean = false
     )
 
     private val recipesRepository = RecipesRepository(application)
@@ -43,18 +39,22 @@ class CategoriesListFragmentViewModel(application: Application) : AndroidViewMod
         }
         viewModelScope.launch {
             val categoryCache = recipesRepository.getCategoriesFromCache()
-            val category = recipesRepository.getCategories()
             mutableUIState.value = CategoriesUiState(
                 categoryImage = drawable,
                 category = categoryCache,
-                isError = category == null
             )
-            category?.let { recipesRepository.saveCategoriesToCache(it) }
-            val currentState = mutableUIState.value ?: CategoriesUiState()
+            val category = recipesRepository.getCategories()
             category?.let {
-                mutableUIState.value = currentState.copy(
-                    category = it
-                )
+                val currentState = mutableUIState.value ?: CategoriesUiState()
+                if (category != null) {
+                    recipesRepository.saveCategoriesToCache(it)
+                    mutableUIState.value = currentState.copy(
+                        category = it,
+                        isError = false
+                    )
+                } else if (categoryCache.isEmpty()) {
+                    mutableUIState.value = currentState.copy(isError = true)
+                }
             }
         }
     }

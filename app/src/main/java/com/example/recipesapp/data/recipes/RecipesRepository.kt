@@ -1,6 +1,5 @@
 package com.example.recipesapp.data.recipes
 
-
 import android.app.Application
 import androidx.room.Room
 import com.example.recipesapp.constants.URL
@@ -14,20 +13,20 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RecipesRepository(application: Application) {
 
-    var retrofit: Retrofit = Retrofit.Builder()
+    private var retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val service: RecipeApiService = retrofit.create(RecipeApiService::class.java)
+    private val service: RecipeApiService = retrofit.create(RecipeApiService::class.java)
 
-    val db = Room.databaseBuilder(
+    private val db = Room.databaseBuilder(
         application,
         AppDatabase::class.java, "database-name"
     ).fallbackToDestructiveMigration().build()
 
-    val categoriesDao = db.categoriesDao()
     val recipesDao = db.recipesDao()
+    private val categoriesDao = db.categoriesDao()
 
     suspend fun getCategoriesFromCache(): List<Category> {
         return withContext(Dispatchers.IO) { categoriesDao.getAll() }
