@@ -57,18 +57,35 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
-    fun onFavoritesClicked() {
+     fun onFavoritesClicked() {
         val recipeId = currentRecipeId ?: return
         val currentState = mutableUIState.value ?: RecipeUiState()
         val currentFavorites = getFavorites()
-        if (currentFavorites.contains(recipeId.toString())) {
-            mutableUIState.value = currentState.copy(isFavorite = false)
-            currentFavorites.remove(recipeId.toString())
-        } else {
-            mutableUIState.value = currentState.copy(isFavorite = true)
-            currentFavorites.add(recipeId.toString())
-        }
-        saveFavorites(currentFavorites)
+         viewModelScope.launch {
+             if (currentFavorites.contains(recipeId.toString())) {
+                 currentState.recipe?.let {
+                     recipesRepository.saveFavoritesToCache(
+                             it.copy(
+                                 isFavorite = false
+                             )
+
+                     )
+                 }
+                 mutableUIState.value = currentState.copy(isFavorite = false)
+                 currentFavorites.remove(recipeId.toString())
+             } else {
+                 currentState.recipe?.let {
+                     recipesRepository.saveFavoritesToCache(
+                             it.copy(
+                                 isFavorite = true
+                             )
+                     )
+                 }
+                 mutableUIState.value = currentState.copy(isFavorite = true)
+                 currentFavorites.add(recipeId.toString())
+             }
+             saveFavorites(currentFavorites)
+         }
     }
 
     fun updatingPortions(portionsCount: Int) {

@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoritesRecipeDao {
-    @Query("SELECT * FROM recipe WHERE isFavorite = true")
+    @Query("SELECT * FROM recipe WHERE isFavorite = 1")
     fun getAll(): Flow<List<Recipe>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(recipe: List<Recipe>)
+    suspend fun insertAll(recipe: List<Recipe>)
 }

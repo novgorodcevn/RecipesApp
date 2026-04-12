@@ -30,10 +30,10 @@ class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(ap
         application.getSharedPreferences(SAVE_FAVORITES_ID, Context.MODE_PRIVATE)
     private val recipesRepository = RecipesRepository(application)
 
-   fun loadFavorites() {
+    fun loadFavorites() {
 
-       val ids = getFavorites().mapNotNull { it.toIntOrNull() }.toSet()
-       val drawable = try {
+        val ids = getFavorites().mapNotNull { it.toIntOrNull() }.toSet()
+        val drawable = try {
             IMAGE_BCG_FAVORITES.let {
                 getApplication<Application>().assets?.open(
                     it
@@ -48,11 +48,14 @@ class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(ap
         }
         viewModelScope.launch {
             val recipeById = recipesRepository.getRecipesByIds(ids)
-            mutableUIState.value = FavoritesUiState(
-                favoritesList = recipeById ?: emptyList(),
-                favoritesImage = drawable,
-                isError = recipeById == null
-            )
+            val recipeCache = recipesRepository.getFavoritesFromCache()
+            recipeCache.collect() { recipes ->
+                mutableUIState.value = FavoritesUiState(
+                    favoritesList = recipes,
+                    favoritesImage = drawable,
+                    isError = recipeById == null
+                )
+            }
         }
     }
 

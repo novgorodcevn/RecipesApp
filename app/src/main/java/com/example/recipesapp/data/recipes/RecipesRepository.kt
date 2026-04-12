@@ -7,6 +7,7 @@ import com.example.recipesapp.data.category.AppDatabase
 import com.example.recipesapp.model.Category
 import com.example.recipesapp.model.Recipe
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -25,8 +26,11 @@ class RecipesRepository(application: Application) {
         AppDatabase::class.java, "database-name"
     ).fallbackToDestructiveMigration().build()
 
-    val recipesDao = db.recipesDao()
+    private val recipesDao = db.recipesDao()
     private val categoriesDao = db.categoriesDao()
+
+    private val favoritesDao = db.favoritesRecipeDao()
+
 
     suspend fun getCategoriesFromCache(): List<Category> {
         return withContext(Dispatchers.IO) { categoriesDao.getAll() }
@@ -48,6 +52,15 @@ class RecipesRepository(application: Application) {
         }
     }
 
+    suspend fun getFavoritesFromCache(): Flow<List<Recipe>> {
+        return withContext(Dispatchers.IO) { favoritesDao.getAll() }
+    }
+
+    suspend fun saveFavoritesToCache(recipes: Recipe) {
+        withContext(Dispatchers.IO) {
+            favoritesDao.insertAll(listOf(recipes))
+        }
+    }
     suspend fun getCategories(): List<Category>? {
         return withContext(Dispatchers.IO) {
             try {
