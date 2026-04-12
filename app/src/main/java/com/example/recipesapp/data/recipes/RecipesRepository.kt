@@ -25,7 +25,7 @@ class RecipesRepository(application: Application) {
         AppDatabase::class.java, "database-name"
     ).fallbackToDestructiveMigration().build()
 
-    val recipesDao = db.recipesDao()
+    private val recipesDao = db.recipesDao()
     private val categoriesDao = db.categoriesDao()
 
     suspend fun getCategoriesFromCache(): List<Category> {
