@@ -35,17 +35,16 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
                     tvHeading = recipeName,
                 )
                 val recipesByCategoryId = recipesRepository.getRecipesByCategoryId(recipeId)
+                val currentState = mutableUIState.value ?: RecipesUiState()
                 recipesByCategoryId?.map { it.copy(categoryId = recipeId) }?.let {
                     recipesRepository.saveRecipesToCache(it)
-                    val currentState = mutableUIState.value ?: RecipesUiState()
-                    if (recipesByCategoryId != null) {
-                        mutableUIState.value = currentState.copy(
-                            recipesList = it,
-                            isError = false
-                        )
-                    } else if (recipesCache.isEmpty()) {
-                        mutableUIState.value = currentState.copy(isError = true)
-                    }
+                    mutableUIState.value = currentState.copy(
+                        recipesList = it,
+                        isError = false
+                    )
+                }
+                if (recipesByCategoryId == null && recipesCache.isEmpty()) {
+                    mutableUIState.value = currentState.copy(isError = true)
                 }
             }
         }
