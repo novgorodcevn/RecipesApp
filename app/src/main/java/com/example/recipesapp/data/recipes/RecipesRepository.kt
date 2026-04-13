@@ -23,8 +23,9 @@ class RecipesRepository(application: Application) {
     private val db = Room.databaseBuilder(
         application,
         AppDatabase::class.java, "database-name"
-    ).build()
+    ).fallbackToDestructiveMigration().build()
 
+    private val recipesDao = db.recipesDao()
     private val categoriesDao = db.categoriesDao()
 
     suspend fun getCategoriesFromCache(): List<Category> {
@@ -34,6 +35,16 @@ class RecipesRepository(application: Application) {
     suspend fun saveCategoriesToCache(category: List<Category>) {
         withContext(Dispatchers.IO) {
             categoriesDao.insertAll(category)
+        }
+    }
+
+    suspend fun getRecipesFromCache(id: Int?): List<Recipe> {
+        return withContext(Dispatchers.IO) { recipesDao.getAll(id) }
+    }
+
+    suspend fun saveRecipesToCache(recipes: List<Recipe>) {
+        withContext(Dispatchers.IO) {
+            recipesDao.insertAll(recipes)
         }
     }
 

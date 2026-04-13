@@ -1,6 +1,7 @@
 package com.example.recipesapp.model
 
 import android.os.Parcelable
+import androidx.room.Entity
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 

@@ -16,7 +16,7 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
         val imageUrl: String? = null,
         val tvHeading: String? = null,
         val recipesList: List<Recipe>? = null,
-        val isError: Boolean = true,
+        val isError: Boolean = false,
     )
 
     private val mutableUIState = MutableLiveData<RecipesUiState>()
@@ -25,16 +25,28 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
 
     fun loadRecipe(recipeId: Int?, recipeName: String?, recipeImage: String?) {
         viewModelScope.launch {
-              val imageUrl = "$IMAGE_URL$recipeImage"
-              if (recipeId != null) {
-                  val recipesByCategoryId = recipesRepository.getRecipesByCategoryId(recipeId)
-                  mutableUIState.value = RecipesUiState(
-                      imageUrl = imageUrl,
-                      recipesList = recipesByCategoryId,
-                      tvHeading = recipeName,
-                      isError = recipesByCategoryId == null
-                  )
-              }
-          }
+            val recipesCache = recipesRepository.getRecipesFromCache(recipeId)
+            val imageUrl = "$IMAGE_URL$recipeImage"
+            if (recipeId != null) {
+
+                mutableUIState.value = RecipesUiState(
+                    imageUrl = imageUrl,
+                    recipesList = recipesCache,
+                    tvHeading = recipeName,
+                )
+                val recipesByCategoryId = recipesRepository.getRecipesByCategoryId(recipeId)
+                val currentState = mutableUIState.value ?: RecipesUiState()
+                recipesByCategoryId?.map { it.copy(categoryId = recipeId) }?.let {
+                    recipesRepository.saveRecipesToCache(it)
+                    mutableUIState.value = currentState.copy(
+                        recipesList = it,
+                        isError = false
+                    )
+                }
+                if (recipesByCategoryId == null && recipesCache.isEmpty()) {
+                    mutableUIState.value = currentState.copy(isError = true)
+                }
+            }
+        }
     }
 }
