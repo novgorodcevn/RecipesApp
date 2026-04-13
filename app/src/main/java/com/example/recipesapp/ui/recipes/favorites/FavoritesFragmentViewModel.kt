@@ -49,13 +49,12 @@ class FavoritesFragmentViewModel(application: Application) : AndroidViewModel(ap
         viewModelScope.launch {
             val recipeById = recipesRepository.getRecipesByIds(ids)
             val recipeCache = recipesRepository.getFavoritesFromCache()
-            recipeCache.collect() { recipes ->
-                mutableUIState.value = FavoritesUiState(
-                    favoritesList = recipes,
-                    favoritesImage = drawable,
-                    isError = recipeById == null
-                )
-            }
+
+            mutableUIState.value = FavoritesUiState(
+                favoritesList = recipeCache,
+                favoritesImage = drawable,
+                isError = recipeById == null
+            )
         }
     }
 

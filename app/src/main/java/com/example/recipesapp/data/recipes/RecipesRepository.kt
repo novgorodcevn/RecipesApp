@@ -52,7 +52,7 @@ class RecipesRepository(application: Application) {
         }
     }
 
-    suspend fun getFavoritesFromCache(): Flow<List<Recipe>> {
+    suspend fun getFavoritesFromCache(): List<Recipe> {
         return withContext(Dispatchers.IO) { favoritesDao.getAll() }
     }
 
@@ -61,6 +61,7 @@ class RecipesRepository(application: Application) {
             favoritesDao.insertAll(listOf(recipes))
         }
     }
+
     suspend fun getCategories(): List<Category>? {
         return withContext(Dispatchers.IO) {
             try {
