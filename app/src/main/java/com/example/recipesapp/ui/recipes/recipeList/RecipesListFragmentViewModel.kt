@@ -40,11 +40,13 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
                 Log.d("DEBUG", "From cache: ${recipesCache.size}")
                 val currentState = mutableUIState.value ?: RecipesUiState()
                 recipesByCategoryId?.map { newRecipesByCategoryId ->
+                    val recipeIdCache = recipesRepository.getRecipeIdFromCache(newRecipesByCategoryId.id)
                     val recipesCategoryById =
                         recipesCache.find { it.id == newRecipesByCategoryId.id }
+                    Log.d("DEBUG", "id=${newRecipesByCategoryId.id} isFavorite=${recipesCategoryById?.isFavorite}")
                     newRecipesByCategoryId.copy(
                         categoryId = recipeId,
-                        isFavorite = recipesCategoryById?.isFavorite ?: false
+                        isFavorite = recipeIdCache?.isFavorite ?: false
                     )
                 }?.let {
                     recipesRepository.saveRecipesToCache(it)

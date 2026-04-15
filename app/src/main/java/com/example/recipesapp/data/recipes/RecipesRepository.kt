@@ -1,6 +1,7 @@
 package com.example.recipesapp.data.recipes
 
 import android.app.Application
+import android.util.Log
 import androidx.room.Room
 import com.example.recipesapp.constants.URL
 import com.example.recipesapp.data.category.AppDatabase
@@ -48,6 +49,10 @@ class RecipesRepository(application: Application) {
 
     suspend fun saveRecipesToCache(recipes: List<Recipe>) {
         withContext(Dispatchers.IO) {
+            Log.d(
+                "DEBUG",
+                "saveRecipes: ${recipes.map { "id=${it.id} isFavorite=${it.isFavorite}" }}"
+            )
             recipesDao.insertAll(recipes)
         }
     }
@@ -58,6 +63,7 @@ class RecipesRepository(application: Application) {
 
     suspend fun saveFavoritesToCache(recipes: Recipe) {
         withContext(Dispatchers.IO) {
+            Log.d("DEBUG", "saveFavorites: id=${recipes.id} isFavorite=${recipes.isFavorite}")
             favoritesDao.insertAll(listOf(recipes))
         }
     }
@@ -69,6 +75,12 @@ class RecipesRepository(application: Application) {
             } catch (e: Exception) {
                 null
             }
+        }
+    }
+
+    suspend fun getRecipeIdFromCache(id: Int?): Recipe? {
+        return withContext(Dispatchers.IO) {
+            recipesDao.getOne(id)
         }
     }
 
@@ -86,17 +98,6 @@ class RecipesRepository(application: Application) {
         return withContext(Dispatchers.IO) {
             try {
                 service.getRecipeById(id).execute().body()
-            } catch (e: Exception) {
-                null
-            }
-        }
-    }
-
-    suspend fun getRecipesByIds(ids: Set<Int>): List<Recipe>? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val idsString = ids.joinToString(",")
-                service.getRecipesByIds(idsString).execute().body()
             } catch (e: Exception) {
                 null
             }
