@@ -1,6 +1,7 @@
 package com.example.recipesapp.ui.recipes.recipeList
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -36,7 +37,13 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
                 )
                 val recipesByCategoryId = recipesRepository.getRecipesByCategoryId(recipeId)
                 val currentState = mutableUIState.value ?: RecipesUiState()
-                recipesByCategoryId?.map { it.copy(categoryId = recipeId) }?.let {
+                recipesByCategoryId?.map { newRecipesByCategoryId ->
+                    val recipeIdCache = recipesRepository.getRecipeIdFromCache(newRecipesByCategoryId.id)
+                    newRecipesByCategoryId.copy(
+                        categoryId = recipeId,
+                        isFavorite = recipeIdCache?.isFavorite ?: false
+                    )
+                }?.let {
                     recipesRepository.saveRecipesToCache(it)
                     mutableUIState.value = currentState.copy(
                         recipesList = it,
