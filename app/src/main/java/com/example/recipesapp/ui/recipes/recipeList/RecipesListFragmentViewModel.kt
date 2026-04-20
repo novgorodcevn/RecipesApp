@@ -36,14 +36,9 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
                     tvHeading = recipeName,
                 )
                 val recipesByCategoryId = recipesRepository.getRecipesByCategoryId(recipeId)
-                Log.d("DEBUG", "From network: ${recipesByCategoryId?.size}")
-                Log.d("DEBUG", "From cache: ${recipesCache.size}")
                 val currentState = mutableUIState.value ?: RecipesUiState()
                 recipesByCategoryId?.map { newRecipesByCategoryId ->
                     val recipeIdCache = recipesRepository.getRecipeIdFromCache(newRecipesByCategoryId.id)
-                    val recipesCategoryById =
-                        recipesCache.find { it.id == newRecipesByCategoryId.id }
-                    Log.d("DEBUG", "id=${newRecipesByCategoryId.id} isFavorite=${recipesCategoryById?.isFavorite}")
                     newRecipesByCategoryId.copy(
                         categoryId = recipeId,
                         isFavorite = recipeIdCache?.isFavorite ?: false

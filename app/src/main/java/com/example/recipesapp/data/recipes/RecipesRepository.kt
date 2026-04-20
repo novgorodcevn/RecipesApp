@@ -49,10 +49,6 @@ class RecipesRepository(application: Application) {
 
     suspend fun saveRecipesToCache(recipes: List<Recipe>) {
         withContext(Dispatchers.IO) {
-            Log.d(
-                "DEBUG",
-                "saveRecipes: ${recipes.map { "id=${it.id} isFavorite=${it.isFavorite}" }}"
-            )
             recipesDao.insertAll(recipes)
         }
     }
@@ -63,7 +59,6 @@ class RecipesRepository(application: Application) {
 
     suspend fun saveFavoritesToCache(recipes: Recipe) {
         withContext(Dispatchers.IO) {
-            Log.d("DEBUG", "saveFavorites: id=${recipes.id} isFavorite=${recipes.isFavorite}")
             favoritesDao.insertAll(listOf(recipes))
         }
     }
