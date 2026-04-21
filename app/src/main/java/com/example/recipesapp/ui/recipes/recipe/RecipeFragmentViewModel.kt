@@ -1,21 +1,16 @@
 package com.example.recipesapp.ui.recipes.recipe
 
-import android.app.Application
-import android.content.Context
-import androidx.core.content.edit
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipesapp.constants.IMAGE_URL
-import com.example.recipesapp.constants.KEY_FAVORITES_ID
-import com.example.recipesapp.constants.SAVE_FAVORITES_ID
 import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.model.Ingredient
 import com.example.recipesapp.model.Recipe
 import kotlinx.coroutines.launch
 
-class RecipeFragmentViewModel(application: Application) : AndroidViewModel(application) {
+class RecipeFragmentViewModel(private val recipesRepository: RecipesRepository) : ViewModel() {
     data class RecipeUiState(
         val recipe: Recipe? = null,
         val portions: Int = 1,
@@ -29,7 +24,6 @@ class RecipeFragmentViewModel(application: Application) : AndroidViewModel(appli
 
     private val mutableUIState = MutableLiveData<RecipeUiState>()
 
-    private val recipesRepository = RecipesRepository(application)
     val uiState: LiveData<RecipeUiState> get() = mutableUIState
 
     private var currentRecipeId: Int? = null
