@@ -1,17 +1,15 @@
 package com.example.recipesapp.ui.recipes.recipeList
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipesapp.constants.IMAGE_URL
 import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.model.Recipe
 import kotlinx.coroutines.launch
 
-class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(application) {
+class RecipesListFragmentViewModel(private val recipesRepository: RecipesRepository) : ViewModel() {
 
     data class RecipesUiState(
         val imageUrl: String? = null,
@@ -22,7 +20,6 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
 
     private val mutableUIState = MutableLiveData<RecipesUiState>()
     val uiState: LiveData<RecipesUiState> get() = mutableUIState
-    private val recipesRepository = RecipesRepository(application)
 
     fun loadRecipe(recipeId: Int?, recipeName: String?, recipeImage: String?) {
         viewModelScope.launch {
@@ -38,7 +35,8 @@ class RecipesListFragmentViewModel(application: Application) : AndroidViewModel(
                 val recipesByCategoryId = recipesRepository.getRecipesByCategoryId(recipeId)
                 val currentState = mutableUIState.value ?: RecipesUiState()
                 recipesByCategoryId?.map { newRecipesByCategoryId ->
-                    val recipeIdCache = recipesRepository.getRecipeIdFromCache(newRecipesByCategoryId.id)
+                    val recipeIdCache =
+                        recipesRepository.getRecipeIdFromCache(newRecipesByCategoryId.id)
                     newRecipesByCategoryId.copy(
                         categoryId = recipeId,
                         isFavorite = recipeIdCache?.isFavorite ?: false

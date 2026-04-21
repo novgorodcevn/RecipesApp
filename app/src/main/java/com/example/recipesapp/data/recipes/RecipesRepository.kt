@@ -1,37 +1,35 @@
 package com.example.recipesapp.data.recipes
 
-import android.app.Application
-import android.util.Log
-import androidx.room.Room
-import com.example.recipesapp.constants.URL
-import com.example.recipesapp.data.category.AppDatabase
+import android.content.res.AssetManager
+import android.graphics.drawable.Drawable
+import com.example.recipesapp.data.category.CategoriesDao
+import com.example.recipesapp.data.favorites.FavoritesRecipeDao
 import com.example.recipesapp.model.Category
 import com.example.recipesapp.model.Recipe
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
-class RecipesRepository(application: Application) {
-
-    private var retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val service: RecipeApiService = retrofit.create(RecipeApiService::class.java)
-
-    private val db = Room.databaseBuilder(
-        application,
-        AppDatabase::class.java, "database-name"
-    ).fallbackToDestructiveMigration().build()
-
-    private val recipesDao = db.recipesDao()
-    private val categoriesDao = db.categoriesDao()
-
-    private val favoritesDao = db.favoritesRecipeDao()
-
+class RecipesRepository(
+    private val recipesDao: RecipesDao,
+    private val categoriesDao: CategoriesDao,
+    private val favoritesDao: FavoritesRecipeDao,
+    private val service: RecipeApiService,
+    private val asset: AssetManager,
+) {
+    suspend fun getDrawableAsset(drawable: String): Drawable? {
+        return withContext(Dispatchers.IO) {
+            try {
+                asset.open(
+                    drawable
+                )
+                    .use { inputStream ->
+                        Drawable.createFromStream(inputStream, null)
+                    }
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
 
     suspend fun getCategoriesFromCache(): List<Category> {
         return withContext(Dispatchers.IO) { categoriesDao.getAll() }
