@@ -8,9 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.recipesapp.constants.IMAGE_BCG_FAVORITES
 import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.model.Recipe
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
-class FavoritesFragmentViewModel(private val recipesRepository: RecipesRepository) : ViewModel() {
+@HiltViewModel
+class FavoritesFragmentViewModel @Inject constructor(private val recipesRepository: RecipesRepository) : ViewModel() {
 
     data class FavoritesUiState(
         val favoritesImage: Drawable? = null,
