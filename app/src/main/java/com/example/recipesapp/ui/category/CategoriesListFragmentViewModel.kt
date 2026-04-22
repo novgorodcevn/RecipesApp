@@ -8,9 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.recipesapp.constants.IMAGE_BCG_CATEGORIES
 import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.model.Category
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CategoriesListFragmentViewModel(private val recipesRepository: RecipesRepository) :
+@HiltViewModel
+class CategoriesListFragmentViewModel @Inject constructor(private val recipesRepository: RecipesRepository) :
     ViewModel() {
     data class CategoriesUiState(
         val category: List<Category>? = null,

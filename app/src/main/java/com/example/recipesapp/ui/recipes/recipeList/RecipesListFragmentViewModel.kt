@@ -7,9 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.recipesapp.constants.IMAGE_URL
 import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.model.Recipe
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
-class RecipesListFragmentViewModel(private val recipesRepository: RecipesRepository) : ViewModel() {
+@HiltViewModel
+class RecipesListFragmentViewModel @Inject constructor(private val recipesRepository: RecipesRepository) :
+    ViewModel() {
 
     data class RecipesUiState(
         val imageUrl: String? = null,
