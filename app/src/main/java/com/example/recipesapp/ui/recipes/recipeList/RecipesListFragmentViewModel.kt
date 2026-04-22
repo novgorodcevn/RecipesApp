@@ -8,7 +8,7 @@ import com.example.recipesapp.constants.IMAGE_URL
 import com.example.recipesapp.data.recipes.RecipesRepository
 import com.example.recipesapp.model.Recipe
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel

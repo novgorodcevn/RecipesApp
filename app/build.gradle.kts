@@ -1,20 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
-    kotlin("plugin.serialization") version "2.0.21"
+    kotlin("plugin.serialization")
     id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
     namespace = "com.example.recipesapp"
-    compileSdk = 35
-
-    defaultConfig {
-        applicationId = "com.example.recipesapp"
-        minSdk = 28
-        targetSdk = 35
+    compileSdk {
+        version = release(36)
     }
 
     defaultConfig {
@@ -40,6 +37,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 
     buildFeatures{
         viewBinding = true
@@ -47,8 +47,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    ksp("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
